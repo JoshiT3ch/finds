@@ -23,9 +23,12 @@ export default function HeroSection() {
           >
             Browse Finds
           </Link>
-          <button className="border-2 border-gray-900 text-gray-900 px-8 py-3 rounded-lg hover:bg-gray-50 font-semibold transition">
+          <Link
+            href="/sell"
+            className="border-2 border-gray-900 text-gray-900 px-8 py-3 rounded-lg hover:bg-gray-50 font-semibold transition inline-block"
+          >
             Sell Something
-          </button>
+          </Link>
         </div>
       </div>
     </section>

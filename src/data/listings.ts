@@ -101,6 +101,14 @@ export const listings: Listing[] = [
   },
 ];
 
+export const categories = Array.from(
+  new Set(listings.map((listing) => listing.category))
+).sort();
+
+export const conditions = Array.from(
+  new Set(listings.map((listing) => listing.condition))
+).sort();
+
 export function getListingBySlug(slug: string): Listing | undefined {
   return listings.find((listing) => listing.slug === slug);
 }

@@ -4,11 +4,7 @@ import React, { useMemo, useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
-import { listings } from '@/data/listings';
-
-// Get unique categories and conditions from listings
-const categories = Array.from(new Set(listings.map((l) => l.category))).sort();
-const conditions = Array.from(new Set(listings.map((l) => l.condition))).sort();
+import { categories, conditions, listings } from '@/data/listings';
 
 export default function BrowsePage() {
   const [searchQuery, setSearchQuery] = useState('');
