@@ -10,6 +10,7 @@ export interface Listing {
   sellerName: string;
   location: string;
   image: string;
+  brand?: string;
 }
 
 export const listings: Listing[] = [
@@ -26,6 +27,7 @@ export const listings: Listing[] = [
     sellerName: 'Maria Santos',
     location: 'Manila, Metro Manila',
     image: '🧥',
+    brand: 'Levi\'s',
   },
   {
     id: 2,
@@ -107,4 +109,33 @@ export function getListingsByCategory(category: string): Listing[] {
   return listings.filter(
     (listing) => listing.category.toLowerCase() === category.toLowerCase()
   );
+}
+
+export function getRelatedListings(
+  currentSlug: string,
+  limit: number = 3
+): Listing[] {
+  const currentListing = getListingBySlug(currentSlug);
+  if (!currentListing) return [];
+
+  // First, get items from same category (excluding current item)
+  const sameCategory = listings.filter(
+    (listing) =>
+      listing.category === currentListing.category &&
+      listing.slug !== currentSlug
+  );
+
+  // If we have enough from same category, return those
+  if (sameCategory.length >= limit) {
+    return sameCategory.slice(0, limit);
+  }
+
+  // Otherwise, combine with other items
+  const others = listings.filter(
+    (listing) =>
+      listing.category !== currentListing.category &&
+      listing.slug !== currentSlug
+  );
+
+  return [...sameCategory, ...others].slice(0, limit);
 }
