@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 export default function Header() {
   return (
@@ -7,17 +8,19 @@ export default function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <h1 className="text-2xl font-bold text-gray-900">Finds</h1>
+            <Link href="/" className="text-2xl font-bold text-gray-900 hover:text-gray-700">
+              Finds
+            </Link>
           </div>
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            <a
-              href="#"
-              className="text-gray-700 hover:text-gray-900 font-medium text-sm"
+            <Link
+              href="/browse"
+              className="text-gray-700 hover:text-gray-900 font-medium text-sm transition"
             >
               Browse
-            </a>
+            </Link>
             <a
               href="#"
               className="text-gray-700 hover:text-gray-900 font-medium text-sm"

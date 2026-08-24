@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 export default function HeroSection() {
   return (
@@ -16,9 +17,12 @@ export default function HeroSection() {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button className="bg-gray-900 text-white px-8 py-3 rounded-lg hover:bg-gray-800 font-semibold transition">
+          <Link
+            href="/browse"
+            className="bg-gray-900 text-white px-8 py-3 rounded-lg hover:bg-gray-800 font-semibold transition inline-block"
+          >
             Browse Finds
-          </button>
+          </Link>
           <button className="border-2 border-gray-900 text-gray-900 px-8 py-3 rounded-lg hover:bg-gray-50 font-semibold transition">
             Sell Something
           </button>
