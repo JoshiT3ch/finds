@@ -14,7 +14,7 @@ export default function Header() {
           </div>
 
           {/* Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="flex items-center gap-3 sm:gap-8">
             <Link
               href="/browse"
               className="text-gray-700 hover:text-gray-900 font-medium text-sm transition"
@@ -31,7 +31,11 @@ export default function Header() {
 
           {/* Search and CTA */}
           <div className="flex items-center gap-4">
-            <button className="hidden sm:block text-gray-700 hover:text-gray-900">
+            <Link
+              href="/browse"
+              aria-label="Search listings"
+              className="hidden sm:block text-gray-700 hover:text-gray-900"
+            >
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -45,14 +49,11 @@ export default function Header() {
                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                 />
               </svg>
-            </button>
+            </Link>
 
-            <a
-              href="#"
-              className="hidden sm:block text-gray-700 hover:text-gray-900 font-medium text-sm"
-            >
-              Sign In
-            </a>
+            <span className="hidden sm:block text-gray-500 font-medium text-sm" aria-label="Sign in unavailable">
+              Sign In (soon)
+            </span>
 
             <Link
               href="/sell"

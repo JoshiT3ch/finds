@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -15,20 +16,20 @@ export default function Footer() {
             <h4 className="font-semibold mb-4">Browse</h4>
             <ul className="space-y-2">
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/browse"
                   className="text-gray-400 hover:text-white transition"
                 >
                   All Items
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/browse"
                   className="text-gray-400 hover:text-white transition"
                 >
                   Categories
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -38,20 +39,20 @@ export default function Footer() {
             <h4 className="font-semibold mb-4">Sell</h4>
             <ul className="space-y-2">
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/sell"
                   className="text-gray-400 hover:text-white transition"
                 >
                   List an Item
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-white transition"
+                <span
+                  className="text-gray-500"
+                  aria-label="How it works is coming soon"
                 >
                   How it Works
-                </a>
+                </span>
               </li>
             </ul>
           </div>
@@ -61,20 +62,14 @@ export default function Footer() {
             <h4 className="font-semibold mb-4">About</h4>
             <ul className="space-y-2">
               <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-white transition"
-                >
+                <span className="text-gray-500" aria-label="About Finds is coming soon">
                   About Finds
-                </a>
+                </span>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-white transition"
-                >
+                <span className="text-gray-500" aria-label="Contact is coming soon">
                   Contact
-                </a>
+                </span>
               </li>
             </ul>
           </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 export default function SellingSection() {
   return (
@@ -10,9 +11,12 @@ export default function SellingSection() {
         <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
           Turn your closet into cash. List your items on Finds and connect with buyers looking for great second-hand finds.
         </p>
-        <button className="bg-gray-900 text-white px-8 py-3 rounded-lg hover:bg-gray-800 font-semibold transition">
+        <Link
+          href="/sell"
+          className="inline-block bg-gray-900 text-white px-8 py-3 rounded-lg hover:bg-gray-800 font-semibold transition"
+        >
           Start Selling
-        </button>
+        </Link>
       </div>
     </section>
   );
