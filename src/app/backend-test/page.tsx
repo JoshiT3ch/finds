@@ -1,7 +1,9 @@
+import Image from "next/image";
 import { connection } from "next/server";
 import { createClient } from "../../../utils/supabase/server";
 
 const TEST_LISTING_TITLE = "Supabase Test Denim Jacket";
+const LISTING_IMAGES_PATH = "/storage/v1/object/public/listing-images/";
 
 type ListingRow = {
   title: string | null;
@@ -9,6 +11,7 @@ type ListingRow = {
   size: string | null;
   condition: string | null;
   price: number | string | null;
+  image_url: string | null;
   location: string | null;
   description: string | null;
   flaws: string | string[] | Record<string, unknown> | null;
@@ -48,6 +51,36 @@ function formatValue(value: ListingRow[keyof ListingRow]) {
   return String(value);
 }
 
+function getValidListingImageUrl(imageUrl: string | null) {
+  if (!imageUrl) {
+    return null;
+  }
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+  if (!supabaseUrl) {
+    return null;
+  }
+
+  try {
+    const parsedImageUrl = new URL(imageUrl);
+    const parsedSupabaseUrl = new URL(supabaseUrl);
+
+    if (
+      parsedImageUrl.protocol !== "https:" ||
+      parsedImageUrl.hostname !== parsedSupabaseUrl.hostname ||
+      !parsedImageUrl.pathname.startsWith(LISTING_IMAGES_PATH) ||
+      parsedImageUrl.search !== ""
+    ) {
+      return null;
+    }
+
+    return parsedImageUrl.toString();
+  } catch {
+    return null;
+  }
+}
+
 async function getTestListing(): Promise<QueryState> {
   await connection();
 
@@ -66,7 +99,7 @@ async function getTestListing(): Promise<QueryState> {
   const { data, error } = await supabase
     .from("listings")
     .select(
-      "title, category, size, condition, price, location, description, flaws, status",
+      "title, category, size, condition, price, image_url, location, description, flaws, status",
     )
     .eq("title", TEST_LISTING_TITLE)
     .maybeSingle();
@@ -88,6 +121,10 @@ async function getTestListing(): Promise<QueryState> {
 
 export default async function BackendTestPage() {
   const result = await getTestListing();
+  const imageUrl =
+    result.status === "success"
+      ? getValidListingImageUrl(result.listing.image_url)
+      : null;
 
   return (
     <main className="min-h-screen bg-white px-4 py-10 text-gray-900 sm:px-6 lg:px-8">
@@ -102,6 +139,22 @@ export default async function BackendTestPage() {
             <p className="mb-6 text-lg font-semibold text-green-800">
               Supabase connection successful
             </p>
+            {imageUrl ? (
+              <div className="relative mb-6 aspect-[4/3] overflow-hidden rounded-lg border border-green-200 bg-white">
+                <Image
+                  src={imageUrl}
+                  alt={`${result.listing.title ?? TEST_LISTING_TITLE} listing image`}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 768px"
+                  className="object-cover"
+                />
+              </div>
+            ) : (
+              <div className="mb-6 flex aspect-[4/3] items-center justify-center rounded-lg border border-dashed border-green-300 bg-white px-6 text-center text-sm font-medium text-green-900">
+                Listing image is missing or is not a valid public Supabase
+                Storage URL.
+              </div>
+            )}
             <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {fields.map(([label, key]) => (
                 <div key={key} className="border-t border-green-200 pt-3">
