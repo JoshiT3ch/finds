@@ -1,44 +1,118 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 import ProductCard from "@/components/ProductCard";
-import { categories, conditions, listings } from "@/data/listings";
+
+export type BrowseListing = {
+  id: string;
+  name: string;
+  price: number;
+  size: string;
+  condition: string;
+  category: string;
+  description: string;
+  flaws: string;
+  location: string;
+  image: string | null;
+};
 
 type BrowseClientProps = {
+  listings: BrowseListing[];
+  loadError: boolean;
   showCreatedMessage: boolean;
 };
 
-export function BrowseClient({ showCreatedMessage }: BrowseClientProps) {
+type SortOrder = "newest" | "price-ascending" | "price-descending";
+
+function getOptions(listings: BrowseListing[], key: keyof BrowseListing) {
+  return Array.from(
+    new Set(
+      listings
+        .map((listing) => listing[key])
+        .filter((value): value is string => typeof value === "string"),
+    ),
+  ).sort((first, second) => first.localeCompare(second));
+}
+
+export function BrowseClient({
+  listings,
+  loadError,
+  showCreatedMessage,
+}: BrowseClientProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [selectedCondition, setSelectedCondition] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedCondition, setSelectedCondition] = useState("");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
+
+  const categories = useMemo(
+    () => getOptions(listings, "category"),
+    [listings],
+  );
+  const sizes = useMemo(() => getOptions(listings, "size"), [listings]);
+  const conditions = useMemo(
+    () => getOptions(listings, "condition"),
+    [listings],
+  );
 
   const filteredListings = useMemo(() => {
-    return listings.filter((listing) => {
+    const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+    const matches = listings.filter((listing) => {
       const matchesSearch =
-        listing.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        listing.description.toLowerCase().includes(searchQuery.toLowerCase());
-
+        normalizedSearchQuery === "" ||
+        [
+          listing.name,
+          listing.description,
+          listing.category,
+          listing.location,
+          listing.flaws,
+        ].some((value) => value.toLowerCase().includes(normalizedSearchQuery));
       const matchesCategory =
         selectedCategory === "" || listing.category === selectedCategory;
-
+      const matchesSize =
+        selectedSize === "" || listing.size === selectedSize;
       const matchesCondition =
         selectedCondition === "" || listing.condition === selectedCondition;
 
-      return matchesSearch && matchesCategory && matchesCondition;
+      return (
+        matchesSearch && matchesCategory && matchesSize && matchesCondition
+      );
     });
-  }, [searchQuery, selectedCategory, selectedCondition]);
+
+    if (sortOrder === "price-ascending") {
+      return [...matches].sort((first, second) => first.price - second.price);
+    }
+
+    if (sortOrder === "price-descending") {
+      return [...matches].sort((first, second) => second.price - first.price);
+    }
+
+    return matches;
+  }, [
+    listings,
+    searchQuery,
+    selectedCategory,
+    selectedCondition,
+    selectedSize,
+    sortOrder,
+  ]);
 
   const resetFilters = () => {
     setSearchQuery("");
     setSelectedCategory("");
+    setSelectedSize("");
     setSelectedCondition("");
+    setSortOrder("newest");
   };
 
   const hasActiveFilters =
-    searchQuery !== "" || selectedCategory !== "" || selectedCondition !== "";
+    searchQuery !== "" ||
+    selectedCategory !== "" ||
+    selectedSize !== "" ||
+    selectedCondition !== "" ||
+    sortOrder !== "newest";
 
   return (
     <div className="min-h-screen bg-white">
@@ -50,8 +124,9 @@ export function BrowseClient({ showCreatedMessage }: BrowseClientProps) {
             Browse Finds
           </h1>
           <p className="text-gray-600">
-            Discover {listings.length} unique second-hand, thrifted, and vintage
-            clothing items.
+            {loadError
+              ? "Discover unique second-hand, thrifted, and vintage clothing."
+              : `Discover ${listings.length} unique second-hand, thrifted, and vintage clothing items.`}
           </p>
         </div>
 
@@ -64,109 +139,183 @@ export function BrowseClient({ showCreatedMessage }: BrowseClientProps) {
           </div>
         ) : null}
 
-        <div className="mb-8 rounded-lg border border-gray-200 bg-gray-50 p-6">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div>
-              <label
-                htmlFor="search"
-                className="mb-2 block text-sm font-medium text-gray-700"
-              >
-                Search
-              </label>
-              <input
-                id="search"
-                type="text"
-                placeholder="Search by item name..."
-                value={searchQuery}
-                onChange={(event) => setSearchQuery(event.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-gray-900"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="category"
-                className="mb-2 block text-sm font-medium text-gray-700"
-              >
-                Category
-              </label>
-              <select
-                id="category"
-                value={selectedCategory}
-                onChange={(event) => setSelectedCategory(event.target.value)}
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-gray-900"
-              >
-                <option value="">All Categories</option>
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label
-                htmlFor="condition"
-                className="mb-2 block text-sm font-medium text-gray-700"
-              >
-                Condition
-              </label>
-              <select
-                id="condition"
-                value={selectedCondition}
-                onChange={(event) => setSelectedCondition(event.target.value)}
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-gray-900"
-              >
-                <option value="">All Conditions</option>
-                {conditions.map((condition) => (
-                  <option key={condition} value={condition}>
-                    {condition}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {hasActiveFilters ? (
-            <div className="mt-4">
-              <button
-                onClick={resetFilters}
-                className="text-sm font-medium text-gray-600 underline transition hover:text-gray-900"
-                aria-label="Reset all filters"
-              >
-                Clear all filters
-              </button>
-            </div>
-          ) : null}
-        </div>
-
-        <div className="mb-6">
-          <p className="text-sm text-gray-600">
-            {filteredListings.length} of {listings.length} items
-            {hasActiveFilters && " shown"}
-          </p>
-        </div>
-
-        {filteredListings.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredListings.map((listing) => (
-              <ProductCard key={listing.id} listing={listing} />
-            ))}
+        {loadError ? (
+          <div
+            role="alert"
+            className="rounded-lg border border-red-200 bg-red-50 p-6 text-red-900"
+          >
+            <h2 className="font-semibold">We could not load the listings.</h2>
+            <p className="mt-2 text-sm text-red-800">
+              Please refresh the page and try again in a moment.
+            </p>
           </div>
         ) : (
-          <div className="py-12 text-center">
-            <p className="mb-4 text-gray-600">
-              No items found matching your filters.
-            </p>
-            <button
-              onClick={resetFilters}
-              className="font-medium text-gray-900 transition hover:underline"
-              aria-label="Reset filters and try again"
-            >
-              Clear filters and try again
-            </button>
-          </div>
+          <>
+            <div className="mb-8 rounded-lg border border-gray-200 bg-gray-50 p-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-5">
+                <div>
+                  <label
+                    htmlFor="search"
+                    className="mb-2 block text-sm font-medium text-gray-700"
+                  >
+                    Search
+                  </label>
+                  <input
+                    id="search"
+                    type="text"
+                    placeholder="Search by item name..."
+                    value={searchQuery}
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-gray-900"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="category"
+                    className="mb-2 block text-sm font-medium text-gray-700"
+                  >
+                    Category
+                  </label>
+                  <select
+                    id="category"
+                    value={selectedCategory}
+                    onChange={(event) =>
+                      setSelectedCategory(event.target.value)
+                    }
+                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-gray-900"
+                  >
+                    <option value="">All Categories</option>
+                    {categories.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="size"
+                    className="mb-2 block text-sm font-medium text-gray-700"
+                  >
+                    Size
+                  </label>
+                  <select
+                    id="size"
+                    value={selectedSize}
+                    onChange={(event) => setSelectedSize(event.target.value)}
+                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-gray-900"
+                  >
+                    <option value="">All Sizes</option>
+                    {sizes.map((size) => (
+                      <option key={size} value={size}>
+                        {size}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="condition"
+                    className="mb-2 block text-sm font-medium text-gray-700"
+                  >
+                    Condition
+                  </label>
+                  <select
+                    id="condition"
+                    value={selectedCondition}
+                    onChange={(event) =>
+                      setSelectedCondition(event.target.value)
+                    }
+                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-gray-900"
+                  >
+                    <option value="">All Conditions</option>
+                    {conditions.map((condition) => (
+                      <option key={condition} value={condition}>
+                        {condition}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="sort"
+                    className="mb-2 block text-sm font-medium text-gray-700"
+                  >
+                    Sort
+                  </label>
+                  <select
+                    id="sort"
+                    value={sortOrder}
+                    onChange={(event) =>
+                      setSortOrder(event.target.value as SortOrder)
+                    }
+                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-gray-900"
+                  >
+                    <option value="newest">Newest first</option>
+                    <option value="price-ascending">
+                      Price: Low to high
+                    </option>
+                    <option value="price-descending">
+                      Price: High to low
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              {hasActiveFilters ? (
+                <div className="mt-4">
+                  <button
+                    onClick={resetFilters}
+                    className="text-sm font-medium text-gray-600 underline transition hover:text-gray-900"
+                    aria-label="Reset all filters"
+                  >
+                    Clear all filters
+                  </button>
+                </div>
+              ) : null}
+            </div>
+
+            <div className="mb-6">
+              <p className="text-sm text-gray-600">
+                {filteredListings.length} of {listings.length} items
+                {hasActiveFilters && " shown"}
+              </p>
+            </div>
+
+            {filteredListings.length > 0 ? (
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {filteredListings.map((listing) => (
+                  <ProductCard key={listing.id} listing={listing} />
+                ))}
+              </div>
+            ) : hasActiveFilters ? (
+              <div className="py-12 text-center">
+                <p className="mb-4 text-gray-600">
+                  No items found matching your filters.
+                </p>
+                <button
+                  onClick={resetFilters}
+                  className="font-medium text-gray-900 transition hover:underline"
+                  aria-label="Reset filters and try again"
+                >
+                  Clear filters and try again
+                </button>
+              </div>
+            ) : (
+              <div className="py-12 text-center">
+                <h2 className="font-semibold text-gray-900">
+                  No available listings yet.
+                </h2>
+                <p className="mt-2 text-gray-600">
+                  Check back soon for newly published finds.
+                </p>
+              </div>
+            )}
+          </>
         )}
       </main>
 

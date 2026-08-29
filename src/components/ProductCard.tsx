@@ -1,36 +1,56 @@
-import React from 'react';
-import Link from 'next/link';
-import { Listing } from '@/data/listings';
+import Image from "next/image";
+import Link from "next/link";
+
+interface ProductCardListing {
+  name: string;
+  price: number;
+  size: string;
+  condition: string;
+  image: string | null;
+  slug?: string;
+}
 
 interface ProductCardProps {
-  listing: Listing;
+  listing: ProductCardListing;
 }
 
 export default function ProductCard({ listing }: ProductCardProps) {
+  const formattedPrice = new Intl.NumberFormat("en-PH", {
+    style: "currency",
+    currency: "PHP",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format(listing.price);
+
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition">
-      {/* Image */}
-      <div className="bg-gray-100 h-64 flex items-center justify-center overflow-hidden">
-        {listing.image.startsWith('http') ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white transition hover:shadow-lg">
+      <div className="relative flex h-64 items-center justify-center overflow-hidden bg-gray-100">
+        {listing.image?.startsWith("https://") ? (
+          <Image
             src={listing.image}
             alt={listing.name}
-            className="w-full h-full object-cover"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover"
           />
-        ) : (
+        ) : listing.image ? (
           <div className="text-6xl">{listing.image}</div>
+        ) : (
+          <div className="px-6 text-center text-sm font-medium text-gray-500">
+            Image unavailable
+          </div>
         )}
       </div>
 
-      {/* Content */}
       <div className="p-4">
-        <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+        <h3 className="mb-2 line-clamp-2 font-semibold text-gray-900">
           {listing.name}
         </h3>
 
-        <div className="flex items-baseline gap-2 mb-3">
-          <span className="text-xl font-bold text-gray-900">₱{listing.price}</span>
+        <div className="mb-3 flex items-baseline gap-2">
+          <span className="text-xl font-bold text-gray-900">
+            {formattedPrice}
+          </span>
         </div>
 
         <div className="space-y-1 text-sm text-gray-600">
@@ -38,12 +58,22 @@ export default function ProductCard({ listing }: ProductCardProps) {
           <p>Condition: {listing.condition}</p>
         </div>
 
-        <Link
-          href={`/items/${listing.slug}`}
-          className="w-full mt-4 bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-800 font-medium transition text-sm block text-center"
-        >
-          View Item
-        </Link>
+        {listing.slug ? (
+          <Link
+            href={`/items/${listing.slug}`}
+            className="mt-4 block w-full rounded-lg bg-gray-900 py-2 text-center text-sm font-medium text-white transition hover:bg-gray-800"
+          >
+            View Item
+          </Link>
+        ) : (
+          <span
+            aria-disabled="true"
+            title="Listing details are not available yet."
+            className="mt-4 block w-full cursor-not-allowed rounded-lg bg-gray-200 py-2 text-center text-sm font-medium text-gray-500"
+          >
+            View Item
+          </span>
+        )}
       </div>
     </div>
   );
