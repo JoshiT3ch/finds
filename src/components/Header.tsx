@@ -1,46 +1,77 @@
-import React from 'react';
-import Link from 'next/link';
+import Link from "next/link";
+import { signOut } from "@/app/auth/actions";
+import { createClient } from "../../utils/supabase/server";
 
-export default function Header() {
+async function getHeaderAuthState() {
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase.auth.getClaims();
+
+    return !error && Boolean(data?.claims);
+  } catch {
+    return false;
+  }
+}
+
+export default async function Header() {
+  const isSignedIn = await getHeaderAuthState();
+  const listItemHref = isSignedIn ? "/sell" : "/login?next=/sell";
+
   return (
     <header className="border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
+      <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between gap-3">
           <div className="flex-shrink-0">
-            <Link href="/" className="text-2xl font-bold text-gray-900 hover:text-gray-700">
+            <Link
+              href="/"
+              className="text-2xl font-bold text-gray-900 hover:text-gray-700"
+            >
               Finds
             </Link>
           </div>
 
-          {/* Navigation */}
-          <nav className="flex items-center gap-3 sm:gap-8">
+          <nav className="flex items-center gap-3 sm:gap-8" aria-label="Main navigation">
             <Link
               href="/browse"
-              className="text-gray-700 hover:text-gray-900 font-medium text-sm transition"
+              className="text-sm font-medium text-gray-700 transition hover:text-gray-900"
             >
               Browse
             </Link>
             <Link
               href="/sell"
-              className="text-gray-700 hover:text-gray-900 font-medium text-sm"
+              className="text-sm font-medium text-gray-700 transition hover:text-gray-900"
             >
               Sell
             </Link>
+            {isSignedIn ? (
+              <Link
+                href="/account"
+                className="text-sm font-medium text-gray-700 transition hover:text-gray-900 sm:hidden"
+              >
+                Account
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="text-sm font-medium text-gray-700 transition hover:text-gray-900 sm:hidden"
+              >
+                Log in
+              </Link>
+            )}
           </nav>
 
-          {/* Search and CTA */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link
               href="/browse"
               aria-label="Search listings"
-              className="hidden sm:block text-gray-700 hover:text-gray-900"
+              className="hidden text-gray-700 hover:text-gray-900 sm:block"
             >
               <svg
-                className="w-5 h-5"
+                className="h-5 w-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -51,13 +82,43 @@ export default function Header() {
               </svg>
             </Link>
 
-            <span className="hidden sm:block text-gray-500 font-medium text-sm" aria-label="Sign in unavailable">
-              Sign In (soon)
-            </span>
+            {isSignedIn ? (
+              <>
+                <Link
+                  href="/account"
+                  className="hidden text-sm font-medium text-gray-700 transition hover:text-gray-900 sm:block"
+                >
+                  Account
+                </Link>
+                <form action={signOut} className="hidden sm:block">
+                  <button
+                    type="submit"
+                    className="text-sm font-medium text-gray-700 transition hover:text-gray-900"
+                  >
+                    Sign out
+                  </button>
+                </form>
+                <form action={signOut} className="sm:hidden">
+                  <button
+                    type="submit"
+                    className="text-xs font-medium text-gray-700 transition hover:text-gray-900"
+                  >
+                    Sign out
+                  </button>
+                </form>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="hidden text-sm font-medium text-gray-700 transition hover:text-gray-900 sm:block"
+              >
+                Log in
+              </Link>
+            )}
 
             <Link
-              href="/sell"
-              className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800 font-medium text-sm transition"
+              href={listItemHref}
+              className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
             >
               List an Item
             </Link>

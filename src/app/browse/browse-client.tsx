@@ -1,8 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
 import ProductCard from "@/components/ProductCard";
 
 export type BrowseListing = {
@@ -115,10 +113,7 @@ export function BrowseClient({
     sortOrder !== "newest";
 
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
-
-      <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-8">
           <h1 className="mb-2 text-3xl font-bold text-gray-900">
             Browse Finds
@@ -317,9 +312,6 @@ export function BrowseClient({
             )}
           </>
         )}
-      </main>
-
-      <Footer />
-    </div>
+    </main>
   );
 }

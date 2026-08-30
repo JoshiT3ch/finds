@@ -300,8 +300,13 @@ export async function updatePassword(
 }
 
 export async function signOut() {
-  const supabase = await createClient();
-  await supabase.auth.signOut({ scope: "local" });
-  revalidatePath("/account");
+  try {
+    const supabase = await createClient();
+    await supabase.auth.signOut({ scope: "local" });
+  } catch {
+    // Keep logout failures neutral and let the next request verify the auth state.
+  }
+
+  revalidatePath("/", "layout");
   redirect("/login?status=signed-out");
 }

@@ -1,4 +1,6 @@
 import { connection } from "next/server";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 import { getSearchParam } from "../../../utils/auth/redirects";
 import {
   mapPublicListing,
@@ -62,10 +64,14 @@ export default async function BrowsePage(props: PageProps<"/browse">) {
     getSearchParam(searchParams.status) === "listing-created";
 
   return (
-    <BrowseClient
-      listings={listingsResult.listings}
-      loadError={listingsResult.status === "error"}
-      showCreatedMessage={showCreatedMessage}
-    />
+    <div className="min-h-screen bg-white">
+      <Header />
+      <BrowseClient
+        listings={listingsResult.listings}
+        loadError={listingsResult.status === "error"}
+        showCreatedMessage={showCreatedMessage}
+      />
+      <Footer />
+    </div>
   );
 }
