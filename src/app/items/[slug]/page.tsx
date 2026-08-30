@@ -12,121 +12,28 @@ import {
   listings,
   type Listing,
 } from "@/data/listings";
+import {
+  mapPublicListing,
+  type PublicListing,
+  type PublicListingRow,
+} from "../../../../utils/listings/public-listing";
 import { requireSupabasePublicConfig } from "../../../../utils/supabase/config";
 import { createClient } from "../../../../utils/supabase/server";
 
 const LISTING_FIELDS =
   "id, title, category, size, condition, price, location, description, flaws, status, image_url, created_at";
-const LISTING_IMAGES_PATH = "/storage/v1/object/public/listing-images/";
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export const dynamic = "force-dynamic";
 
-type ListingRow = {
-  id: string | number | null;
-  title: string | null;
-  category: string | null;
-  size: string | null;
-  condition: string | null;
-  price: number | string | null;
-  location: string | null;
-  description: string | null;
-  flaws: string | string[] | Record<string, unknown> | null;
-  status: string | null;
-  image_url: string | null;
-  created_at: string | null;
-};
-
-type DatabaseListing = {
-  id: string;
-  name: string;
-  price: number;
-  category: string;
-  size: string;
-  condition: string;
-  location: string;
-  description: string;
-  flaws: string;
-  image: string | null;
-};
-
 type DatabaseLookup =
-  | { status: "success"; listing: DatabaseListing }
+  | { status: "success"; listing: PublicListing }
   | { status: "missing" }
   | { status: "error" };
 
 function isUuid(value: string) {
   return UUID_PATTERN.test(value);
-}
-
-function getText(value: unknown, fallback: string) {
-  const text = typeof value === "string" ? value.trim() : "";
-  return text || fallback;
-}
-
-function getFlaws(value: ListingRow["flaws"]) {
-  if (Array.isArray(value)) {
-    return value.filter((flaw) => typeof flaw === "string").join(" ").trim();
-  }
-
-  return typeof value === "string" ? value.trim() : "";
-}
-
-function getPrice(value: ListingRow["price"]) {
-  const price = typeof value === "string" ? Number(value.trim()) : value;
-
-  return typeof price === "number" && Number.isFinite(price) && price > 0
-    ? price
-    : null;
-}
-
-function getValidListingImageUrl(
-  imageUrl: string | null,
-  supabaseUrl: string,
-) {
-  if (!imageUrl) return null;
-
-  try {
-    const parsedImageUrl = new URL(imageUrl);
-    const parsedSupabaseUrl = new URL(supabaseUrl);
-
-    if (
-      parsedImageUrl.protocol !== "https:" ||
-      parsedImageUrl.origin !== parsedSupabaseUrl.origin ||
-      !parsedImageUrl.pathname.startsWith(LISTING_IMAGES_PATH) ||
-      parsedImageUrl.search !== "" ||
-      parsedImageUrl.hash !== "" ||
-      parsedImageUrl.username !== "" ||
-      parsedImageUrl.password !== ""
-    ) {
-      return null;
-    }
-
-    return parsedImageUrl.toString();
-  } catch {
-    return null;
-  }
-}
-
-function mapDatabaseListing(row: ListingRow, supabaseUrl: string) {
-  const id = row.id === null ? "" : String(row.id).trim();
-  const price = getPrice(row.price);
-
-  if (!id || price === null || row.status !== "available") return null;
-
-  return {
-    id,
-    name: getText(row.title, "Untitled listing"),
-    price,
-    category: getText(row.category, "Uncategorized"),
-    size: getText(row.size, "Not specified"),
-    condition: getText(row.condition, "Not specified"),
-    location: getText(row.location, "Location not specified"),
-    description: getText(row.description, "No description provided."),
-    flaws: getFlaws(row.flaws),
-    image: getValidListingImageUrl(row.image_url, supabaseUrl),
-  } satisfies DatabaseListing;
 }
 
 async function getDatabaseListing(id: string): Promise<DatabaseLookup> {
@@ -146,7 +53,7 @@ async function getDatabaseListing(id: string): Promise<DatabaseLookup> {
     }
 
     const listing = data
-      ? mapDatabaseListing(data as ListingRow, supabaseUrl)
+      ? mapPublicListing(data as PublicListingRow, supabaseUrl)
       : null;
 
     return listing ? { status: "success", listing } : { status: "missing" };
@@ -190,7 +97,7 @@ export async function generateMetadata(
   };
 }
 
-type DetailListing = Omit<DatabaseListing, "id" | "flaws"> & {
+type DetailListing = Omit<PublicListing, "id" | "flaws"> & {
   id: string | number;
   flaws?: string;
   brand?: string;
