@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 interface ProductCardListing {
+  id: string | number;
   name: string;
   price: number;
   size: string;
@@ -15,6 +16,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ listing }: ProductCardProps) {
+  const itemIdentifier = listing.slug ?? String(listing.id);
   const formattedPrice = new Intl.NumberFormat("en-PH", {
     style: "currency",
     currency: "PHP",
@@ -58,22 +60,12 @@ export default function ProductCard({ listing }: ProductCardProps) {
           <p>Condition: {listing.condition}</p>
         </div>
 
-        {listing.slug ? (
-          <Link
-            href={`/items/${listing.slug}`}
-            className="mt-4 block w-full rounded-lg bg-gray-900 py-2 text-center text-sm font-medium text-white transition hover:bg-gray-800"
-          >
-            View Item
-          </Link>
-        ) : (
-          <span
-            aria-disabled="true"
-            title="Listing details are not available yet."
-            className="mt-4 block w-full cursor-not-allowed rounded-lg bg-gray-200 py-2 text-center text-sm font-medium text-gray-500"
-          >
-            View Item
-          </span>
-        )}
+        <Link
+          href={`/items/${itemIdentifier}`}
+          className="mt-4 block w-full rounded-lg bg-gray-900 py-2 text-center text-sm font-medium text-white transition hover:bg-gray-800"
+        >
+          View Item
+        </Link>
       </div>
     </div>
   );
