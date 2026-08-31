@@ -206,7 +206,6 @@ export function SellForm() {
       <form
         action={action}
         onSubmit={handleSubmit}
-        encType="multipart/form-data"
         noValidate
         aria-describedby={messageId}
         className="rounded-lg border border-gray-200 bg-gray-50 p-5 sm:p-8"
