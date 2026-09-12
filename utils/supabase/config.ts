@@ -12,8 +12,12 @@ export type SupabasePublicConfig = {
 };
 
 export function getSupabasePublicConfig(): SupabasePublicConfig | null {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  // next.config.ts also exposes these public values to the browser clients.
+  const url =
+    process.env.VITE_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const publishableKey =
+    process.env.VITE_SUPABASE_ANON_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
   if (!url || !publishableKey) {
     return null;
@@ -26,7 +30,9 @@ export function requireSupabasePublicConfig(): SupabasePublicConfig {
   const config = getSupabasePublicConfig();
 
   if (!config) {
-    throw new Error("Supabase authentication is not configured.");
+    throw new Error(
+      "Supabase is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env.local.",
+    );
   }
 
   return config;

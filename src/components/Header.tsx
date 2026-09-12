@@ -45,6 +45,14 @@ export default async function Header() {
             </Link>
             {isSignedIn ? (
               <Link
+                href="/messages"
+                className="text-sm font-medium text-gray-700 transition hover:text-gray-900"
+              >
+                Messages
+              </Link>
+            ) : null}
+            {isSignedIn ? (
+              <Link
                 href="/account"
                 className="text-sm font-medium text-gray-700 transition hover:text-gray-900 sm:hidden"
               >

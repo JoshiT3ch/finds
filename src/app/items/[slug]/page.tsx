@@ -21,20 +21,24 @@ import { requireSupabasePublicConfig } from "../../../../utils/supabase/config";
 import { createClient } from "../../../../utils/supabase/server";
 
 const LISTING_FIELDS =
-  "id, title, category, size, condition, price, location, description, flaws, status, image_url, created_at";
+  "id, title, category, size, condition, price, location, description, flaws, status, image_url, created_at, seller_id";
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export const dynamic = "force-dynamic";
 
 type DatabaseLookup =
-  | { status: "success"; listing: PublicListing }
+  | { status: "success"; listing: DatabaseListing }
   | { status: "missing" }
   | { status: "error" };
 
 function isUuid(value: string) {
   return UUID_PATTERN.test(value);
 }
+
+type DatabaseListing = PublicListing & {
+  sellerId: string;
+};
 
 async function getDatabaseListing(id: string): Promise<DatabaseLookup> {
   try {
@@ -52,9 +56,13 @@ async function getDatabaseListing(id: string): Promise<DatabaseLookup> {
       return { status: "error" };
     }
 
-    const listing = data
-      ? mapPublicListing(data as PublicListingRow, supabaseUrl)
-      : null;
+    const row = data as (PublicListingRow & { seller_id?: unknown }) | null;
+    const publicListing = row ? mapPublicListing(row, supabaseUrl) : null;
+    const sellerId = row?.seller_id;
+    const listing =
+      publicListing && typeof sellerId === "string" && isUuid(sellerId)
+        ? { ...publicListing, sellerId }
+        : null;
 
     return listing ? { status: "success", listing } : { status: "missing" };
   } catch {
@@ -102,6 +110,7 @@ type DetailListing = Omit<PublicListing, "id" | "flaws"> & {
   flaws?: string;
   brand?: string;
   sellerName?: string;
+  sellerId?: string;
 };
 
 function ListingImage({ listing }: { listing: DetailListing }) {
@@ -130,10 +139,12 @@ function ItemDetail({
   listing,
   relatedListings = [],
   showActions = false,
+  viewerId,
 }: {
   listing: DetailListing;
   relatedListings?: Listing[];
   showActions?: boolean;
+  viewerId?: string;
 }) {
   const formattedPrice = new Intl.NumberFormat("en-PH", {
     style: "currency",
@@ -227,29 +238,37 @@ function ItemDetail({
               </div>
             ) : null}
 
-            {showActions && listing.sellerName ? (
+            {showActions ? (
               <>
-                <div className="mb-6 border-b border-gray-200 pb-6">
-                  <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-700">
-                    Seller
-                  </h2>
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-300">
-                      <span className="text-lg font-bold text-gray-700">
-                        {sellerInitial}
-                      </span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900">
-                        {listing.sellerName}
-                      </p>
-                      <p className="mt-0.5 text-xs text-gray-600">
-                        {listing.location}
-                      </p>
+                {listing.sellerName ? (
+                  <div className="mb-6 border-b border-gray-200 pb-6">
+                    <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-700">
+                      Seller
+                    </h2>
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-300">
+                        <span className="text-lg font-bold text-gray-700">
+                          {sellerInitial}
+                        </span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900">
+                          {listing.sellerName}
+                        </p>
+                        <p className="mt-0.5 text-xs text-gray-600">
+                          {listing.location}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <ItemActions />
+                ) : null}
+                <ItemActions
+                  listingId={listing.sellerId ? String(listing.id) : undefined}
+                  isSignedIn={Boolean(viewerId)}
+                  isOwnListing={
+                    Boolean(viewerId) && viewerId === listing.sellerId
+                  }
+                />
               </>
             ) : null}
           </div>
@@ -316,5 +335,21 @@ export default async function ItemPage(props: PageProps<"/items/[slug]">) {
   if (result.status === "missing") notFound();
   if (result.status === "error") return <ListingError />;
 
-  return <ItemDetail listing={result.listing} />;
+  let viewerId: string | undefined;
+
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase.auth.getClaims();
+    const claimUserId = data?.claims?.sub;
+
+    if (typeof claimUserId === "string" && isUuid(claimUserId)) {
+      viewerId = claimUserId;
+    }
+  } catch {
+    // Signed-out visitors can still view the listing and will log in before messaging.
+  }
+
+  return (
+    <ItemDetail listing={result.listing} showActions viewerId={viewerId} />
+  );
 }

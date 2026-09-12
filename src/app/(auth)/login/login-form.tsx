@@ -118,7 +118,10 @@ export function LoginForm({ next, notice }: LoginFormProps) {
 
       <p className="mt-6 text-center text-sm text-gray-600">
         No account yet?{" "}
-        <Link href="/signup" className="font-semibold text-gray-950 underline">
+        <Link
+          href={`/signup?next=${encodeURIComponent(next)}`}
+          className="font-semibold text-gray-950 underline"
+        >
           Sign up
         </Link>
       </p>
