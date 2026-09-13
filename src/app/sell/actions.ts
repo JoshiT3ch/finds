@@ -4,6 +4,7 @@ import { randomUUID } from "crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { categories, conditions } from "@/data/listings";
+import { isDepartment } from "../../../utils/listings/departments";
 import { createClient } from "../../../utils/supabase/server";
 
 const LISTING_IMAGES_BUCKET = "listing-images";
@@ -21,6 +22,7 @@ const allowedImageTypes = {
 } as const;
 
 export type ListingFormValues = {
+  department: string;
   title: string;
   price: string;
   category: string;
@@ -43,6 +45,7 @@ export type CreateListingState = {
 };
 
 type ValidatedListingInput = {
+  department: string;
   values: ListingFormValues;
   title: string;
   price: number;
@@ -66,6 +69,7 @@ function getFormValue(formData: FormData, key: keyof ListingFormValues) {
 
 function getFormValues(formData: FormData): ListingFormValues {
   return {
+    department: getFormValue(formData, "department"),
     title: getFormValue(formData, "title"),
     price: getFormValue(formData, "price"),
     category: getFormValue(formData, "category"),
@@ -160,6 +164,7 @@ async function validateListingInput(formData: FormData): Promise<
 > {
   const values = getFormValues(formData);
   const trimmedValues = {
+    department: values.department.trim(),
     title: values.title.trim(),
     price: values.price.trim(),
     category: values.category.trim(),
@@ -170,6 +175,10 @@ async function validateListingInput(formData: FormData): Promise<
     flaws: values.flaws.trim(),
   };
   const fieldErrors: ListingFieldErrors = {};
+
+  if (!isDepartment(trimmedValues.department)) {
+    fieldErrors.department = "Choose Men, Women, or Kids.";
+  }
 
   if (!trimmedValues.title) {
     fieldErrors.title = "Add a title for your item.";
@@ -257,6 +266,7 @@ async function validateListingInput(formData: FormData): Promise<
   return {
     success: true,
     data: {
+      department: trimmedValues.department,
       values,
       title: trimmedValues.title,
       price,
@@ -365,6 +375,7 @@ export async function createListing(
     ];
 
     const { error: insertError } = await supabase.from("listings").insert({
+      department: validation.data.department,
       title: validation.data.title,
       category: validation.data.category,
       size: validation.data.size,

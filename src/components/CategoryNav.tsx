@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { departments } from "../../utils/listings/departments";
 
 type CategoryOption = {
   label: string;
@@ -17,6 +18,19 @@ type CategoryGroup = {
 };
 
 const categoryGroups: CategoryGroup[] = [
+  ...departments.map((department) => ({
+    id: department.toLowerCase(),
+    label: department,
+    browseHref: `/browse?department=${department}`,
+    description: `Explore pre-loved clothing, shoes, and accessories for ${department.toLowerCase()}.`,
+    options: [
+      { label: `All ${department}`, href: `/browse?department=${department}` },
+      ...["Jackets", "Tops", "Bottoms", "Dresses", "Shoes", "Accessories"].map((category) => ({
+        label: category,
+        href: `/browse?department=${department}&category=${category}`,
+      })),
+    ],
+  })),
   {
     id: "clothing",
     label: "Clothing",

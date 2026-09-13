@@ -10,9 +10,10 @@ import {
 import { requireSupabasePublicConfig } from "../../../utils/supabase/config";
 import { createClient } from "../../../utils/supabase/server";
 import { BrowseClient } from "./browse-client";
+import { isDepartment } from "../../../utils/listings/departments";
 
 const LISTING_FIELDS =
-  "id, title, category, size, condition, price, location, description, flaws, status, image_url, created_at";
+  "id, title, department, category, size, condition, price, location, description, flaws, status, image_url, created_at";
 const LISTING_LIMIT = 100;
 
 type ListingsResult =
@@ -63,17 +64,20 @@ export default async function BrowsePage(props: PageProps<"/browse">) {
   const showCreatedMessage =
     getSearchParam(searchParams.status) === "listing-created";
   const initialCategory = getSearchParam(searchParams.category) ?? "";
+  const departmentParam = getSearchParam(searchParams.department);
+  const initialDepartment = isDepartment(departmentParam) ? departmentParam : "";
   const initialSearchQuery = getSearchParam(searchParams.search) ?? "";
 
   return (
     <div className="min-h-screen bg-white">
       <Header />
       <BrowseClient
-        key={`${initialCategory}:${initialSearchQuery}`}
+        key={`${initialDepartment}:${initialCategory}:${initialSearchQuery}`}
         listings={listingsResult.listings}
         loadError={listingsResult.status === "error"}
         showCreatedMessage={showCreatedMessage}
         initialCategory={initialCategory}
+        initialDepartment={initialDepartment}
         initialSearchQuery={initialSearchQuery}
       />
       <Footer />

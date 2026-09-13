@@ -21,7 +21,7 @@ import { requireSupabasePublicConfig } from "../../../../utils/supabase/config";
 import { createClient } from "../../../../utils/supabase/server";
 
 const LISTING_FIELDS =
-  "id, title, category, size, condition, price, location, description, flaws, status, image_url, image_urls, created_at, seller_id";
+  "id, title, department, category, size, condition, price, location, description, flaws, status, image_url, image_urls, created_at, seller_id";
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -178,7 +178,7 @@ function ItemDetail({
           <div className="lg:col-span-1">
             <div className="mb-4">
               <span className="inline-block rounded-full bg-gray-900 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
-                {listing.category}
+                {listing.department ? `${listing.department} · ` : ""}{listing.category}
               </span>
             </div>
             <h1 className="mb-2 text-2xl font-bold leading-tight text-gray-900 sm:text-3xl">
@@ -328,7 +328,7 @@ export default async function ItemPage(props: PageProps<"/items/[slug]">) {
 
     return (
       <ItemDetail
-        listing={listing}
+        listing={{ ...listing, department: null }}
         relatedListings={getRelatedListings(slug, 3)}
         showActions
       />

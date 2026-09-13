@@ -251,7 +251,7 @@ export function MyListings({
   loadError: boolean;
 }) {
   return (
-    <section className="mt-8 border-t border-gray-200 pt-8" aria-labelledby="my-listings-heading">
+    <section aria-labelledby="my-listings-heading">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <div>
           <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
@@ -260,6 +260,13 @@ export function MyListings({
           <h2 id="my-listings-heading" className="mt-2 text-2xl font-bold text-gray-950">
             My Listings
           </h2>
+          {!loadError ? (
+            <p className="mt-2 text-sm text-gray-600">
+              {listings.filter((listing) => listing.status === "available").length} available
+              {" · "}
+              {listings.filter((listing) => listing.status === "sold").length} sold
+            </p>
+          ) : null}
         </div>
         <Link
           href="/sell"

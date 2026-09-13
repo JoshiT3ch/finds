@@ -1,6 +1,9 @@
+import { isDepartment, type Department } from "./departments";
+
 const LISTING_IMAGES_PATH = "/storage/v1/object/public/listing-images/";
 
 export type PublicListingRow = {
+  department?: string | null;
   id: string | number | null;
   title: string | null;
   category: string | null;
@@ -17,6 +20,7 @@ export type PublicListingRow = {
 };
 
 export type PublicListing = {
+  department: Department | null;
   id: string;
   name: string;
   price: number;
@@ -102,6 +106,7 @@ export function mapPublicListing(
 
   return {
     id,
+    department: isDepartment(row.department) ? row.department : null,
     name: getText(row.title, "Untitled listing"),
     price,
     size: getText(row.size, "Not specified"),

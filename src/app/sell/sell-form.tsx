@@ -8,6 +8,7 @@ import React, {
   useState,
 } from "react";
 import { categories, conditions } from "@/data/listings";
+import { departments, isDepartment } from "../../../utils/listings/departments";
 import {
   createListing,
   type CreateListingState,
@@ -16,6 +17,7 @@ import {
 } from "./actions";
 
 const initialDraft: ListingFormValues = {
+  department: "",
   title: "",
   price: "",
   category: "",
@@ -48,6 +50,9 @@ function validateDraft(
   images: File[],
 ): FormErrors {
   const errors: FormErrors = {};
+  if (!isDepartment(draft.department)) {
+    errors.department = "Choose Men, Women, or Kids.";
+  }
   const requiredFields: Array<[FieldName, string]> = [
     ["title", "Add a title for your item."],
     ["category", "Choose a category."],
@@ -236,6 +241,28 @@ export function SellForm() {
         ) : null}
 
         <div className="grid gap-6 sm:grid-cols-2">
+          <div className="sm:col-span-2">
+            <label htmlFor="department" className="mb-2 block text-sm font-medium text-gray-700">
+              Who is it for? <span aria-hidden="true">*</span>
+            </label>
+            <select
+              id="department"
+              name="department"
+              value={draft.department}
+              onChange={(event) => updateField("department", event.target.value)}
+              disabled={isPending}
+              className={inputClassName}
+              aria-required="true"
+              aria-invalid={Boolean(visibleErrors.department)}
+              aria-describedby={visibleErrors.department ? "department-error" : undefined}
+            >
+              <option value="">Choose Men, Women, or Kids</option>
+              {departments.map((department) => (
+                <option key={department} value={department}>{department}</option>
+              ))}
+            </select>
+            {fieldError("department")}
+          </div>
           <div className="sm:col-span-2">
             <label
               htmlFor="title"
@@ -591,7 +618,7 @@ export function SellForm() {
             ) : null}
             <div className="p-6">
               <span className="inline-block rounded-full bg-gray-900 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
-                {draft.category}
+                {draft.department} · {draft.category}
               </span>
               <h2 className="mt-4 text-2xl font-bold text-gray-900">
                 {draft.title}
