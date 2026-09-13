@@ -12,6 +12,7 @@ export type PublicListingRow = {
   flaws?: string | string[] | Record<string, unknown> | null;
   status?: string | null;
   image_url: string | null;
+  image_urls?: string[] | null;
   created_at?: string | null;
 };
 
@@ -26,6 +27,7 @@ export type PublicListing = {
   flaws: string;
   location: string;
   image: string | null;
+  images: string[];
 };
 
 function getText(value: unknown, fallback: string) {
@@ -88,6 +90,16 @@ export function mapPublicListing(
 
   if (!id || price === null) return null;
 
+  const primaryImage = getValidListingImageUrl(row.image_url, supabaseUrl);
+  const galleryImages = Array.isArray(row.image_urls)
+    ? row.image_urls
+        .map((imageUrl) => getValidListingImageUrl(imageUrl, supabaseUrl))
+        .filter((imageUrl): imageUrl is string => imageUrl !== null)
+    : [];
+  const images = Array.from(
+    new Set(primaryImage ? [primaryImage, ...galleryImages] : galleryImages),
+  );
+
   return {
     id,
     name: getText(row.title, "Untitled listing"),
@@ -98,6 +110,7 @@ export function mapPublicListing(
     description: getText(row.description, "No description provided."),
     flaws: getFlaws(row.flaws),
     location: getText(row.location, "Location not specified"),
-    image: getValidListingImageUrl(row.image_url, supabaseUrl),
+    image: images[0] ?? null,
+    images,
   };
 }

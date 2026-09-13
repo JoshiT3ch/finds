@@ -36,7 +36,7 @@ const initialErrorState: ListingActionState = {
 const imageCleanupWarningState: ListingActionState = {
   status: "warning",
   message:
-    "Listing deleted, but its image cleanup failed. Please contact support to remove the leftover image.",
+    "Listing deleted, but its image cleanup failed. Please contact support to remove the leftover images.",
 };
 
 function getFormText(formData: FormData, key: string) {
@@ -256,7 +256,7 @@ export async function deleteListing(
 
   const { data: listing, error: listingError } = await seller.supabase
     .from("listings")
-    .select("image_url")
+    .select("image_url, image_urls")
     .eq("id", listingId)
     .eq("seller_id", seller.sellerId)
     .maybeSingle();
@@ -286,26 +286,51 @@ export async function deleteListing(
   };
 
   try {
-    const storagePathValidation = getOwnedImageStoragePath(
-      listing.image_url,
-      seller.sellerId,
+    const imageUrls = Array.from(
+      new Set(
+        [
+          listing.image_url,
+          ...(Array.isArray(listing.image_urls) ? listing.image_urls : []),
+        ].filter((imageUrl): imageUrl is string => typeof imageUrl === "string"),
+      ),
+    );
+    const storagePathValidations = imageUrls.map((imageUrl) =>
+      getOwnedImageStoragePath(imageUrl, seller.sellerId),
+    );
+    const storagePaths = storagePathValidations
+      .filter(
+        (validation): validation is Extract<
+          ImageStoragePathValidation,
+          { valid: true }
+        > => validation.valid,
+      )
+      .map((validation) => validation.storagePath);
+    const invalidValidation = storagePathValidations.find(
+      (validation) => !validation.valid,
     );
 
-    if (!storagePathValidation.valid) {
+    if (storagePaths.length === 0) {
       console.error(
         "Supabase listing image removal skipped: image URL validation failed.",
-        { reason: storagePathValidation.reason },
+        {
+          reason:
+            invalidValidation && !invalidValidation.valid
+              ? invalidValidation.reason
+              : "invalid-url",
+        },
       );
       result = imageCleanupWarningState;
     } else {
       const { error: storageError } = await seller.supabase.storage
         .from(LISTING_IMAGES_BUCKET)
-        .remove([storagePathValidation.storagePath]);
+        .remove(storagePaths);
 
-      if (storageError) {
+      if (storageError || invalidValidation) {
         console.error(
           "Supabase listing image removal failed.",
-          getSafeErrorDetails(storageError),
+          storageError
+            ? getSafeErrorDetails(storageError)
+            : { reason: "One or more image URLs failed validation." },
         );
         result = imageCleanupWarningState;
       }

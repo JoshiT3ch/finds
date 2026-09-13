@@ -46,6 +46,43 @@ export function SignupForm({ next }: SignupFormProps) {
 
         <div>
           <label
+            htmlFor="signup-display-name"
+            className="block text-sm font-medium text-gray-800"
+          >
+            Public display name
+          </label>
+          <input
+            id="signup-display-name"
+            name="displayName"
+            type="text"
+            autoComplete="name"
+            minLength={2}
+            maxLength={50}
+            required
+            aria-invalid={Boolean(state.fieldErrors?.displayName)}
+            aria-describedby={
+              state.fieldErrors?.displayName
+                ? "signup-display-name-error"
+                : "signup-display-name-help"
+            }
+            className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-950 shadow-sm outline-none transition focus:border-gray-950 focus:ring-2 focus:ring-gray-950/10"
+          />
+          {state.fieldErrors?.displayName ? (
+            <p
+              id="signup-display-name-error"
+              className="mt-2 text-sm text-red-700"
+            >
+              {state.fieldErrors.displayName}
+            </p>
+          ) : (
+            <p id="signup-display-name-help" className="mt-2 text-xs text-gray-500">
+              This is the name other people can search for on Finds.
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label
             htmlFor="signup-email"
             className="block text-sm font-medium text-gray-800"
           >

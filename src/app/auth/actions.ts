@@ -7,6 +7,8 @@ import { getSafeRedirectPath } from "../../../utils/auth/redirects";
 import { createClient } from "../../../utils/supabase/server";
 
 const MIN_PASSWORD_LENGTH = 8;
+const MIN_DISPLAY_NAME_LENGTH = 2;
+const MAX_DISPLAY_NAME_LENGTH = 50;
 const LOCAL_SITE_ORIGIN = "http://localhost:3000";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_RESET_SENT_MESSAGE =
@@ -16,6 +18,7 @@ export type AuthFormState = {
   status: "idle" | "success" | "error";
   message: string;
   fieldErrors?: {
+    displayName?: string;
     email?: string;
     password?: string;
     confirmPassword?: string;
@@ -90,7 +93,8 @@ function validatePasswordUpdate(password: string, confirmPassword: string) {
 
 function hasFieldErrors(fieldErrors: AuthFormState["fieldErrors"]) {
   return Boolean(
-    fieldErrors?.email ||
+    fieldErrors?.displayName ||
+      fieldErrors?.email ||
       fieldErrors?.password ||
       fieldErrors?.confirmPassword,
   );
@@ -138,11 +142,21 @@ export async function signup(
   _previousState: AuthFormState,
   formData: FormData,
 ): Promise<AuthFormState> {
+  const displayName = getFormValue(formData, "displayName").trim();
   const email = getFormValue(formData, "email").trim().toLowerCase();
   const password = getFormValue(formData, "password");
   const confirmPassword = getFormValue(formData, "confirmPassword");
   const next = getSafeRedirectPath(getFormValue(formData, "next"));
   const fieldErrors = validateEmailAndPassword(email, password);
+
+  if (!displayName) {
+    fieldErrors.displayName = "Enter a public display name.";
+  } else if (
+    displayName.length < MIN_DISPLAY_NAME_LENGTH ||
+    displayName.length > MAX_DISPLAY_NAME_LENGTH
+  ) {
+    fieldErrors.displayName = `Use between ${MIN_DISPLAY_NAME_LENGTH} and ${MAX_DISPLAY_NAME_LENGTH} characters.`;
+  }
 
   if (!confirmPassword) {
     fieldErrors.confirmPassword = "Confirm your password.";
@@ -169,6 +183,7 @@ export async function signup(
       password,
       options: {
         emailRedirectTo: redirectTo.toString(),
+        data: { display_name: displayName },
       },
     });
 

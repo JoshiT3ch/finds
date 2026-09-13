@@ -8,6 +8,9 @@ import { createClient } from "../../../utils/supabase/server";
 
 const LISTING_IMAGES_BUCKET = "listing-images";
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
+const MAX_LISTING_IMAGES = 5;
+const MAX_TOTAL_IMAGE_SIZE_BYTES =
+  MAX_LISTING_IMAGES * MAX_IMAGE_SIZE_BYTES;
 const SUCCESS_REDIRECT_PATH = "/browse?status=listing-created";
 const PRICE_PATTERN = /^\d+(?:\.\d{1,2})?$/;
 
@@ -49,8 +52,11 @@ type ValidatedListingInput = {
   location: string;
   description: string;
   flaws: string | null;
-  image: File;
-  imageExtension: (typeof allowedImageTypes)[keyof typeof allowedImageTypes];
+  images: Array<{
+    file: File;
+    extension: (typeof allowedImageTypes)[keyof typeof allowedImageTypes];
+  }>;
+  coverImageIndex: number;
 };
 
 function getFormValue(formData: FormData, key: keyof ListingFormValues) {
@@ -84,14 +90,19 @@ function errorState(
   };
 }
 
-function getSubmittedImage(formData: FormData) {
-  const value = formData.get("image");
+function getSubmittedImages(formData: FormData) {
+  return formData
+    .getAll("images")
+    .filter((value): value is File => value instanceof File && value.size > 0);
+}
 
-  if (!(value instanceof File) || value.size === 0) {
-    return null;
-  }
+function getCoverImageIndex(formData: FormData, imageCount: number) {
+  const value = formData.get("coverImageIndex");
+  const parsedValue = typeof value === "string" ? Number(value) : 0;
 
-  return value;
+  return Number.isInteger(parsedValue) && parsedValue >= 0 && parsedValue < imageCount
+    ? parsedValue
+    : 0;
 }
 
 function hasFieldErrors(fieldErrors: ListingFieldErrors) {
@@ -201,26 +212,45 @@ async function validateListingInput(formData: FormData): Promise<
     fieldErrors.price = "Enter a valid price greater than 0.";
   }
 
-  const image = getSubmittedImage(formData);
-  let imageExtension:
-    | (typeof allowedImageTypes)[keyof typeof allowedImageTypes]
-    | null = null;
+  const submittedImages = getSubmittedImages(formData);
+  const validatedImages: ValidatedListingInput["images"] = [];
 
-  if (!image) {
+  if (submittedImages.length === 0) {
     fieldErrors.image = "Add one listing photo.";
-  } else if (!allowedImageTypes[image.type as keyof typeof allowedImageTypes]) {
-    fieldErrors.image = "Upload a JPEG, PNG, or WebP image.";
-  } else if (image.size > MAX_IMAGE_SIZE_BYTES) {
-    fieldErrors.image = "Upload an image that is 5 MB or smaller.";
+  } else if (submittedImages.length > MAX_LISTING_IMAGES) {
+    fieldErrors.image = `Upload up to ${MAX_LISTING_IMAGES} listing photos.`;
+  } else if (
+    submittedImages.reduce((total, image) => total + image.size, 0) >
+    MAX_TOTAL_IMAGE_SIZE_BYTES
+  ) {
+    fieldErrors.image = "Keep each image at 5 MB or smaller.";
   } else {
-    imageExtension = await getVerifiedImageExtension(image);
+    for (const image of submittedImages) {
+      if (!allowedImageTypes[image.type as keyof typeof allowedImageTypes]) {
+        fieldErrors.image = "Upload only JPEG, PNG, or WebP images.";
+        break;
+      }
 
-    if (!imageExtension) {
-      fieldErrors.image = "Upload a valid JPEG, PNG, or WebP image.";
+      if (image.size > MAX_IMAGE_SIZE_BYTES) {
+        fieldErrors.image = "Keep each image at 5 MB or smaller.";
+        break;
+      }
+
+      const extension = await getVerifiedImageExtension(image);
+
+      if (!extension) {
+        fieldErrors.image = "Upload only valid JPEG, PNG, or WebP images.";
+        break;
+      }
+
+      validatedImages.push({ file: image, extension });
     }
   }
 
-  if (hasFieldErrors(fieldErrors) || !image || !imageExtension) {
+  if (
+    hasFieldErrors(fieldErrors) ||
+    validatedImages.length !== submittedImages.length
+  ) {
     return { success: false, values, fieldErrors };
   }
 
@@ -236,8 +266,8 @@ async function validateListingInput(formData: FormData): Promise<
       location: trimmedValues.location,
       description: trimmedValues.description,
       flaws: trimmedValues.flaws || null,
-      image,
-      imageExtension,
+      images: validatedImages,
+      coverImageIndex: getCoverImageIndex(formData, validatedImages.length),
     },
   };
 }
@@ -282,37 +312,57 @@ export async function createListing(
     );
   }
 
-  const storagePath = `${userId}/${randomUUID()}.${validation.data.imageExtension}`;
+  const storagePaths: string[] = [];
+  const imageUrls: string[] = [];
 
   try {
-    const { error: uploadError } = await supabase.storage
-      .from(LISTING_IMAGES_BUCKET)
-      .upload(storagePath, validation.data.image, {
-        contentType: validation.data.image.type,
-        upsert: false,
-      });
+    for (const image of validation.data.images) {
+      const storagePath = `${userId}/${randomUUID()}.${image.extension}`;
+      const { error: uploadError } = await supabase.storage
+        .from(LISTING_IMAGES_BUCKET)
+        .upload(storagePath, image.file, {
+          contentType: image.file.type,
+          upsert: false,
+        });
 
-    if (uploadError) {
-      return errorState(
-        "We could not upload that photo. Check the file and try again.",
-        submittedValues,
-        { image: "We could not upload that photo." },
-      );
+      if (uploadError) {
+        if (storagePaths.length > 0) {
+          await supabase.storage
+            .from(LISTING_IMAGES_BUCKET)
+            .remove(storagePaths);
+        }
+        return errorState(
+          "We could not upload those photos. Check the files and try again.",
+          submittedValues,
+          { image: "We could not upload those photos." },
+        );
+      }
+
+      storagePaths.push(storagePath);
+      const { data: publicUrlData } = supabase.storage
+        .from(LISTING_IMAGES_BUCKET)
+        .getPublicUrl(storagePath);
+
+      if (!publicUrlData.publicUrl) {
+        await supabase.storage
+          .from(LISTING_IMAGES_BUCKET)
+          .remove(storagePaths);
+        return errorState(
+          "We could not publish the listing right now.",
+          submittedValues,
+        );
+      }
+
+      imageUrls.push(publicUrlData.publicUrl);
     }
 
-    const { data: publicUrlData } = supabase.storage
-      .from(LISTING_IMAGES_BUCKET)
-      .getPublicUrl(storagePath);
-
-    const imageUrl = publicUrlData.publicUrl;
-
-    if (!imageUrl) {
-      await supabase.storage.from(LISTING_IMAGES_BUCKET).remove([storagePath]);
-      return errorState(
-        "We could not publish the listing right now.",
-        submittedValues,
-      );
-    }
+    const coverImageUrl = imageUrls[validation.data.coverImageIndex];
+    const orderedImageUrls = [
+      coverImageUrl,
+      ...imageUrls.filter(
+        (_imageUrl, index) => index !== validation.data.coverImageIndex,
+      ),
+    ];
 
     const { error: insertError } = await supabase.from("listings").insert({
       title: validation.data.title,
@@ -325,17 +375,24 @@ export async function createListing(
       flaws: validation.data.flaws,
       status: "available",
       seller_id: userId,
-      image_url: imageUrl,
+      image_url: coverImageUrl,
+      image_urls: orderedImageUrls,
     });
 
     if (insertError) {
-      await supabase.storage.from(LISTING_IMAGES_BUCKET).remove([storagePath]);
+      await supabase.storage.from(LISTING_IMAGES_BUCKET).remove(storagePaths);
       return errorState(
         "We could not publish the listing right now. Please try again.",
         submittedValues,
       );
     }
   } catch {
+    if (storagePaths.length > 0) {
+      await supabase.storage
+        .from(LISTING_IMAGES_BUCKET)
+        .remove(storagePaths)
+        .catch(() => undefined);
+    }
     return errorState(
       "We could not publish the listing right now. Please try again.",
       submittedValues,

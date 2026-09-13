@@ -36,6 +36,7 @@ const inputClassName =
   "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-gray-900 focus:ring-2 focus:ring-gray-200";
 
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
+const MAX_LISTING_IMAGES = 5;
 const allowedImageTypes = ["image/jpeg", "image/png", "image/webp"];
 const PRICE_PATTERN = /^\d+(?:\.\d{1,2})?$/;
 
@@ -44,7 +45,7 @@ type FormErrors = ListingFieldErrors;
 
 function validateDraft(
   draft: ListingFormValues,
-  image: File | null,
+  images: File[],
 ): FormErrors {
   const errors: FormErrors = {};
   const requiredFields: Array<[FieldName, string]> = [
@@ -86,12 +87,14 @@ function validateDraft(
     errors.description = "Keep the description to 500 characters or less.";
   }
 
-  if (!image) {
+  if (images.length === 0) {
     errors.image = "Add one listing photo.";
-  } else if (!allowedImageTypes.includes(image.type)) {
-    errors.image = "Upload a JPEG, PNG, or WebP image.";
-  } else if (image.size > MAX_IMAGE_SIZE_BYTES) {
-    errors.image = "Upload an image that is 5 MB or smaller.";
+  } else if (images.length > MAX_LISTING_IMAGES) {
+    errors.image = `Upload up to ${MAX_LISTING_IMAGES} listing photos.`;
+  } else if (images.some((image) => !allowedImageTypes.includes(image.type))) {
+    errors.image = "Upload only JPEG, PNG, or WebP images.";
+  } else if (images.some((image) => image.size > MAX_IMAGE_SIZE_BYTES)) {
+    errors.image = "Keep each image at 5 MB or smaller.";
   }
 
   return errors;
@@ -119,8 +122,10 @@ export function SellForm() {
   const [draft, setDraft] = useState<ListingFormValues>(initialDraft);
   const [errors, setErrors] = useState<FormErrors>({});
   const [showPreview, setShowPreview] = useState(false);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
-  const [imageName, setImageName] = useState("");
+  const [imagePreviews, setImagePreviews] = useState<
+    Array<{ name: string; url: string }>
+  >([]);
+  const [coverImageIndex, setCoverImageIndex] = useState(0);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const messageId = state.message ? "sell-message" : undefined;
   const serverErrors =
@@ -129,13 +134,12 @@ export function SellForm() {
 
   useEffect(() => {
     return () => {
-      if (imagePreviewUrl) {
-        URL.revokeObjectURL(imagePreviewUrl);
-      }
+      imagePreviews.forEach((preview) => URL.revokeObjectURL(preview.url));
     };
-  }, [imagePreviewUrl]);
+  }, [imagePreviews]);
 
-  const getSelectedImage = () => imageInputRef.current?.files?.[0] ?? null;
+  const getSelectedImages = () =>
+    Array.from(imageInputRef.current?.files ?? []);
 
   const updateField = (field: FieldName, value: string) => {
     setDraft((current) => ({ ...current, [field]: value }));
@@ -144,22 +148,33 @@ export function SellForm() {
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] ?? null;
+    const files = Array.from(event.target.files ?? []);
     setErrors((current) => ({ ...current, image: undefined }));
     setShowPreview(false);
+    setCoverImageIndex(0);
 
-    if (!file) {
-      setImageName("");
-      setImagePreviewUrl(null);
+    if (files.length === 0) {
+      setImagePreviews([]);
       return;
     }
 
-    setImageName(file.name);
-    setImagePreviewUrl(URL.createObjectURL(file));
+    if (files.length > MAX_LISTING_IMAGES) {
+      event.target.value = "";
+      setImagePreviews([]);
+      setErrors((current) => ({
+        ...current,
+        image: `Upload up to ${MAX_LISTING_IMAGES} listing photos.`,
+      }));
+      return;
+    }
+
+    setImagePreviews(
+      files.map((file) => ({ name: file.name, url: URL.createObjectURL(file) })),
+    );
   };
 
   const validateCurrentDraft = () => {
-    const nextErrors = validateDraft(draft, getSelectedImage());
+    const nextErrors = validateDraft(draft, getSelectedImages());
     setErrors(nextErrors);
     return nextErrors;
   };
@@ -182,8 +197,8 @@ export function SellForm() {
     setDraft(initialDraft);
     setErrors({});
     setShowPreview(false);
-    setImageName("");
-    setImagePreviewUrl(null);
+    setImagePreviews([]);
+    setCoverImageIndex(0);
 
     if (imageInputRef.current) {
       imageInputRef.current.value = "";
@@ -434,18 +449,19 @@ export function SellForm() {
 
           <div className="sm:col-span-2">
             <label
-              htmlFor="image"
+              htmlFor="images"
               className="mb-2 block text-sm font-medium text-gray-700"
             >
-              Photo <span aria-hidden="true">*</span>
+              Photos <span aria-hidden="true">*</span>
             </label>
             <div className="rounded-lg border-2 border-dashed border-gray-300 bg-white p-6 text-center">
               <input
                 ref={imageInputRef}
-                id="image"
-                name="image"
+                id="images"
+                name="images"
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
+                multiple
                 required
                 onChange={handleImageChange}
                 disabled={isPending}
@@ -456,13 +472,49 @@ export function SellForm() {
                   visibleErrors.image ? "image-error" : "image-requirements"
                 }
               />
+              <input
+                type="hidden"
+                name="coverImageIndex"
+                value={coverImageIndex}
+              />
               <p id="image-requirements" className="mt-3 text-sm text-gray-500">
-                JPEG, PNG, or WebP up to 5 MB.
+                Add up to {MAX_LISTING_IMAGES} JPEG, PNG, or WebP images. Each
+                image can be up to 5 MB.
               </p>
-              {imageName ? (
-                <p className="mt-2 text-sm font-medium text-gray-700">
-                  Selected: {imageName}
-                </p>
+              {imagePreviews.length > 0 ? (
+                <div className="mt-5">
+                  <p className="text-sm font-medium text-gray-700">
+                    Choose the cover photo
+                  </p>
+                  <div className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-5">
+                    {imagePreviews.map((preview, index) => (
+                      <button
+                        key={`${preview.name}-${index}`}
+                        type="button"
+                        onClick={() => setCoverImageIndex(index)}
+                        aria-pressed={coverImageIndex === index}
+                        aria-label={`Use ${preview.name} as the cover photo`}
+                        className={`relative aspect-square overflow-hidden rounded-md border-2 bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 ${
+                          coverImageIndex === index
+                            ? "border-gray-950"
+                            : "border-transparent hover:border-gray-400"
+                        }`}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={preview.url}
+                          alt=""
+                          className="h-full w-full object-cover"
+                        />
+                        {coverImageIndex === index ? (
+                          <span className="absolute inset-x-1 bottom-1 rounded bg-gray-950 px-1 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+                            Cover
+                          </span>
+                        ) : null}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               ) : null}
               {fieldError("image")}
             </div>
@@ -500,11 +552,11 @@ export function SellForm() {
         {showPreview ? (
           <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
             <div className="flex h-64 items-center justify-center overflow-hidden bg-gray-100 sm:h-80">
-              {imagePreviewUrl ? (
+              {imagePreviews[coverImageIndex] ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={imagePreviewUrl}
-                  alt="Selected listing preview"
+                  src={imagePreviews[coverImageIndex].url}
+                  alt="Selected cover preview"
                   className="h-full w-full object-cover"
                 />
               ) : (
@@ -513,6 +565,30 @@ export function SellForm() {
                 </div>
               )}
             </div>
+            {imagePreviews.length > 1 ? (
+              <div className="flex gap-2 overflow-x-auto border-b border-gray-200 p-3">
+                {imagePreviews.map((preview, index) => (
+                  <button
+                    key={`${preview.name}-preview-${index}`}
+                    type="button"
+                    onClick={() => setCoverImageIndex(index)}
+                    aria-label={`Preview ${preview.name}`}
+                    className={`h-14 w-14 flex-shrink-0 overflow-hidden rounded border-2 bg-gray-100 ${
+                      coverImageIndex === index
+                        ? "border-gray-950"
+                        : "border-transparent"
+                    }`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={preview.url}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            ) : null}
             <div className="p-6">
               <span className="inline-block rounded-full bg-gray-900 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
                 {draft.category}

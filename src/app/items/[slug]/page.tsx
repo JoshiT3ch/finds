@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import ItemActions from "@/components/ItemActions";
+import ListingGallery from "@/components/ListingGallery";
 import {
   getListingBySlug,
   getRelatedListings,
@@ -21,7 +21,7 @@ import { requireSupabasePublicConfig } from "../../../../utils/supabase/config";
 import { createClient } from "../../../../utils/supabase/server";
 
 const LISTING_FIELDS =
-  "id, title, category, size, condition, price, location, description, flaws, status, image_url, created_at, seller_id";
+  "id, title, category, size, condition, price, location, description, flaws, status, image_url, image_urls, created_at, seller_id";
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -105,26 +105,30 @@ export async function generateMetadata(
   };
 }
 
-type DetailListing = Omit<PublicListing, "id" | "flaws"> & {
+type DetailListing = Omit<PublicListing, "id" | "flaws" | "images"> & {
   id: string | number;
   flaws?: string;
+  images?: string[];
   brand?: string;
   sellerName?: string;
   sellerId?: string;
 };
 
 function ListingImage({ listing }: { listing: DetailListing }) {
+  const listingImages =
+    listing.images && listing.images.length > 0
+      ? listing.images
+      : listing.image?.startsWith("https://")
+        ? [listing.image]
+        : [];
+
+  if (listingImages.length > 0) {
+    return <ListingGallery images={listingImages} title={listing.name} />;
+  }
+
   return (
     <div className="flex h-96 items-center justify-center overflow-hidden rounded-lg border border-gray-200 bg-gray-100 sm:h-[500px]">
-      {listing.image?.startsWith("https://") ? (
-        <Image
-          src={listing.image}
-          alt={listing.name}
-          width={1200}
-          height={1200}
-          className="h-full w-full object-cover"
-        />
-      ) : listing.image ? (
+      {listing.image ? (
         <div className="text-9xl">{listing.image}</div>
       ) : (
         <div className="px-6 text-center text-sm font-medium text-gray-500">

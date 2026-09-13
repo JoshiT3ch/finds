@@ -2,6 +2,7 @@ import Link from "next/link";
 import { signOut } from "@/app/auth/actions";
 import { createClient } from "../../utils/supabase/server";
 import CategoryNav from "./CategoryNav";
+import HeaderSearch from "./HeaderSearch";
 
 async function getHeaderAuthState() {
   try {
@@ -21,7 +22,7 @@ export default async function Header() {
   return (
     <header className="relative z-40 border-b border-gray-200 bg-white">
       <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-4">
           <div className="flex-shrink-0">
             <Link
               href="/"
@@ -31,7 +32,14 @@ export default async function Header() {
             </Link>
           </div>
 
-          <nav className="flex items-center gap-3 sm:gap-8" aria-label="Main navigation">
+          <div className="hidden min-w-[280px] max-w-2xl flex-1 md:block">
+            <HeaderSearch />
+          </div>
+
+          <nav
+            className="hidden items-center gap-5 lg:flex"
+            aria-label="Main navigation"
+          >
             <Link
               href="/browse"
               className="text-sm font-medium text-gray-700 transition hover:text-gray-900"
@@ -70,27 +78,6 @@ export default async function Header() {
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-4">
-            <Link
-              href="/browse"
-              aria-label="Search listings"
-              className="hidden text-gray-700 hover:text-gray-900 sm:block"
-            >
-              <svg
-                className="h-5 w-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </Link>
-
             {isSignedIn ? (
               <>
                 <Link
@@ -132,6 +119,9 @@ export default async function Header() {
               List an Item
             </Link>
           </div>
+        </div>
+        <div className="mt-3 md:hidden">
+          <HeaderSearch />
         </div>
       </div>
       <CategoryNav />
