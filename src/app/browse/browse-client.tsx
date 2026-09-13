@@ -20,6 +20,8 @@ type BrowseClientProps = {
   listings: BrowseListing[];
   loadError: boolean;
   showCreatedMessage: boolean;
+  initialCategory?: string;
+  initialSearchQuery?: string;
 };
 
 type SortOrder = "newest" | "price-ascending" | "price-descending";
@@ -38,9 +40,11 @@ export function BrowseClient({
   listings,
   loadError,
   showCreatedMessage,
+  initialCategory = "",
+  initialSearchQuery = "",
 }: BrowseClientProps) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedCondition, setSelectedCondition] = useState("");
   const [sortOrder, setSortOrder] = useState<SortOrder>("newest");

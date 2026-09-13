@@ -62,14 +62,19 @@ export default async function BrowsePage(props: PageProps<"/browse">) {
   ]);
   const showCreatedMessage =
     getSearchParam(searchParams.status) === "listing-created";
+  const initialCategory = getSearchParam(searchParams.category) ?? "";
+  const initialSearchQuery = getSearchParam(searchParams.search) ?? "";
 
   return (
     <div className="min-h-screen bg-white">
       <Header />
       <BrowseClient
+        key={`${initialCategory}:${initialSearchQuery}`}
         listings={listingsResult.listings}
         loadError={listingsResult.status === "error"}
         showCreatedMessage={showCreatedMessage}
+        initialCategory={initialCategory}
+        initialSearchQuery={initialSearchQuery}
       />
       <Footer />
     </div>

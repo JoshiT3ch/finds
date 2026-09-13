@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { signOut } from "@/app/auth/actions";
 import { createClient } from "../../utils/supabase/server";
+import CategoryNav from "./CategoryNav";
 
 async function getHeaderAuthState() {
   try {
@@ -18,7 +19,7 @@ export default async function Header() {
   const listItemHref = isSignedIn ? "/sell" : "/login?next=/sell";
 
   return (
-    <header className="border-b border-gray-200">
+    <header className="relative z-40 border-b border-gray-200 bg-white">
       <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-3">
           <div className="flex-shrink-0">
@@ -133,6 +134,7 @@ export default async function Header() {
           </div>
         </div>
       </div>
+      <CategoryNav />
     </header>
   );
 }
