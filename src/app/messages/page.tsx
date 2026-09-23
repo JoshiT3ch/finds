@@ -60,15 +60,15 @@ export default async function MessagesPage() {
   const conversations = (data ?? []) as ConversationRow[];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-sage-50">
       <Header />
       <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+          <p className="text-sm font-semibold uppercase tracking-wide text-black">
             Marketplace conversations
           </p>
-          <h1 className="mt-2 text-3xl font-bold text-gray-950">Messages</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="mt-2 text-3xl font-bold text-black">Messages</h1>
+          <p className="mt-2 text-black">
             Talk directly with buyers and sellers about a listing.
           </p>
         </div>
@@ -76,32 +76,32 @@ export default async function MessagesPage() {
         {error ? (
           <div
             role="alert"
-            className="rounded-lg border border-red-200 bg-red-50 p-6 text-red-900"
+            className="rounded-lg border border-red-200 bg-red-50 p-6 text-black"
           >
             <h2 className="font-semibold">We could not load your messages.</h2>
-            <p className="mt-2 text-sm text-red-800">
+            <p className="mt-2 text-sm text-black">
               Refresh the page and try again in a moment.
             </p>
           </div>
         ) : conversations.length === 0 ? (
-          <div className="rounded-lg border border-gray-200 bg-white p-10 text-center shadow-sm">
-            <h2 className="text-lg font-semibold text-gray-950">
+          <div className="rounded-lg border border-sage-200 bg-surface p-10 text-center shadow-sm">
+            <h2 className="text-lg font-semibold text-black">
               No conversations yet
             </h2>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-black">
               Open an available listing and choose Message Seller to get
               started.
             </p>
             <Link
               href="/browse"
-              className="mt-6 inline-flex rounded-lg bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-800"
+              className="mt-6 inline-flex rounded-lg bg-sage-300 px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-sage-400"
             >
               Browse listings
             </Link>
           </div>
         ) : (
-          <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-            <ul className="divide-y divide-gray-200">
+          <div className="overflow-hidden rounded-lg border border-sage-200 bg-surface shadow-sm">
+            <ul className="divide-y divide-sage-200">
               {conversations.map((conversation) => {
                 const isSeller = conversation.seller_id === userId;
 
@@ -109,20 +109,20 @@ export default async function MessagesPage() {
                   <li key={conversation.id}>
                     <Link
                       href={`/messages/${conversation.id}`}
-                      className="block p-5 transition hover:bg-gray-50 sm:p-6"
+                      className="block p-5 transition hover:bg-sage-50 sm:p-6"
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div>
-                          <h2 className="font-semibold text-gray-950">
+                          <h2 className="font-semibold text-black">
                             {conversation.listing_title}
                           </h2>
-                          <p className="mt-1 text-sm text-gray-600">
+                          <p className="mt-1 text-sm text-black">
                             You are the {isSeller ? "seller" : "buyer"}.
                           </p>
                         </div>
                         <time
                           dateTime={conversation.updated_at}
-                          className="flex-shrink-0 text-xs text-gray-500"
+                          className="flex-shrink-0 text-xs text-black"
                         >
                           {formatConversationDate(conversation.updated_at)}
                         </time>

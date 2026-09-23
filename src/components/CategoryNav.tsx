@@ -90,7 +90,7 @@ export default function CategoryNav() {
 
   return (
     <div
-      className="relative border-t border-gray-100 bg-white"
+      className="relative border-t border-sage-200 bg-sage-100"
       onMouseLeave={() => setOpenGroupId(null)}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
@@ -109,7 +109,7 @@ export default function CategoryNav() {
       >
         <Link
           href="/browse"
-          className="flex-shrink-0 border-b-2 border-transparent py-3 text-sm font-semibold text-gray-900 transition hover:border-gray-900"
+          className="flex-shrink-0 border-b-2 border-transparent py-3 text-sm font-semibold text-black transition hover:border-sage-900"
           onMouseEnter={() => setOpenGroupId(null)}
           onFocus={() => setOpenGroupId(null)}
         >
@@ -130,8 +130,8 @@ export default function CategoryNav() {
               onClick={() => setOpenGroupId(group.id)}
               className={`flex flex-shrink-0 items-center gap-1.5 border-b-2 py-3 text-sm font-medium transition ${
                 isOpen
-                  ? "border-gray-900 text-gray-950"
-                  : "border-transparent text-gray-600 hover:border-gray-400 hover:text-gray-950"
+                  ? "border-sage-900 text-black"
+                  : "border-transparent text-black hover:border-sage-400 hover:text-black"
               }`}
             >
               {group.label}
@@ -155,11 +155,11 @@ export default function CategoryNav() {
       {openGroup ? (
         <div
           id={`category-panel-${openGroup.id}`}
-          className="absolute inset-x-0 top-full z-50 border-y border-gray-200 bg-white shadow-lg"
+          className="absolute inset-x-0 top-full z-50 border-y border-sage-200 bg-surface shadow-lg"
         >
           <div className="mx-auto grid max-w-7xl gap-8 px-4 py-7 sm:grid-cols-[minmax(0,2fr)_minmax(230px,1fr)] sm:px-6 lg:px-8">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-black">
                 Shop {openGroup.label}
               </p>
               <ul className="mt-4 grid grid-cols-2 gap-x-8 gap-y-1 sm:grid-cols-3">
@@ -168,7 +168,7 @@ export default function CategoryNav() {
                     <Link
                       href={option.href}
                       onClick={() => setOpenGroupId(null)}
-                      className="block rounded-md px-2 py-2.5 text-sm text-gray-700 transition hover:bg-gray-100 hover:text-gray-950 focus-visible:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900"
+                      className="block rounded-md px-2 py-2.5 text-sm text-black transition hover:bg-sage-100 hover:text-black focus-visible:bg-sage-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-900"
                     >
                       {option.label}
                     </Link>
@@ -177,17 +177,17 @@ export default function CategoryNav() {
               </ul>
             </div>
 
-            <div className="rounded-lg bg-gray-100 p-5">
-              <p className="text-sm font-semibold text-gray-950">
+            <div className="rounded-lg bg-sage-100 p-5">
+              <p className="text-sm font-semibold text-black">
                 Find your next favorite
               </p>
-              <p className="mt-2 text-sm leading-6 text-gray-600">
+              <p className="mt-2 text-sm leading-6 text-black">
                 {openGroup.description}
               </p>
               <Link
                 href={openGroup.browseHref}
                 onClick={() => setOpenGroupId(null)}
-                className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-gray-950 underline decoration-gray-400 underline-offset-4 hover:decoration-gray-950"
+                className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-black underline decoration-sage-400 underline-offset-4 hover:decoration-sage-950"
               >
                 Browse all {openGroup.label.toLowerCase()}
                 <span aria-hidden="true">→</span>

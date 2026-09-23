@@ -18,7 +18,7 @@ export default async function ForgotPasswordPage(
   const status = getSearchParam(searchParams.status);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-10 text-gray-950 sm:px-6 lg:px-8">
+    <main className="flex min-h-screen items-center justify-center bg-sage-50 px-4 py-10 text-black sm:px-6 lg:px-8">
       <ForgotPasswordForm
         notice={getNotice(status)}
         noticeIsError={status === "recovery-error"}

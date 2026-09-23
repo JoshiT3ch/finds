@@ -40,7 +40,7 @@ export default function AboutPage() {
             </p>
 
             <p>
-              Whether you're looking for an affordable outfit, selling clothes
+              Whether you&apos;re looking for an affordable outfit, selling clothes
               you no longer use, or discovering your next thrift find, Finds
               helps connect buyers and sellers in one place.
             </p>

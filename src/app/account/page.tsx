@@ -101,7 +101,7 @@ export default async function AccountPage() {
   const { listings, loadError } = await getSellerListings(supabase, sellerId);
 
   return (
-    <main className="min-h-screen bg-gray-50 px-4 py-6 text-gray-950 sm:px-6 sm:py-10 lg:px-8">
+    <main className="min-h-screen bg-sage-50 px-4 py-6 text-black sm:px-6 sm:py-10 lg:px-8">
       <section className="mx-auto max-w-5xl">
         <div className="mb-6 flex items-center justify-between gap-4">
           <Link href="/" className="text-2xl font-bold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-4">
@@ -111,7 +111,7 @@ export default async function AccountPage() {
             href="/browse"
             aria-label="Close account and return to Browse"
             title="Back to Browse"
-            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-gray-300 bg-white px-3 text-sm font-medium text-gray-700 transition hover:border-gray-500 hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gray-950 sm:px-4"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-sage-300 bg-surface px-3 text-sm font-medium text-black transition hover:border-sage-500 hover:bg-sage-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sage-950 sm:px-4"
           >
             <span className="hidden sm:inline">Back to Browse</span>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
@@ -120,29 +120,29 @@ export default async function AccountPage() {
           </Link>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-8">
+        <div className="rounded-2xl border border-sage-200 bg-surface p-5 shadow-sm sm:p-8">
           <div className="flex flex-wrap items-start justify-between gap-5">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-gray-500">
+              <p className="text-xs font-semibold uppercase tracking-widest text-black">
                 Your Finds
               </p>
-              <h1 className="mt-2 text-3xl font-bold tracking-tight text-gray-950">
+              <h1 className="mt-2 text-3xl font-bold tracking-tight text-black">
                 My account
               </h1>
-              <p className="mt-2 text-sm text-gray-600">
+              <p className="mt-2 text-sm text-black">
                 Manage your listings and keep up with your conversations.
               </p>
             </div>
-            <Link href="/messages" className="inline-flex min-h-11 items-center rounded-lg border border-gray-300 px-4 text-sm font-semibold transition hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-4">
+            <Link href="/messages" className="inline-flex min-h-11 items-center rounded-lg border border-sage-300 px-4 text-sm font-semibold transition hover:bg-sage-50 focus-visible:outline-2 focus-visible:outline-offset-4">
               View messages
             </Link>
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-5 border-t border-gray-200 pt-5">
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-5 border-t border-sage-200 pt-5">
             {email ? (
               <dl className="min-w-0">
-                <dt className="text-sm font-medium text-gray-600">Signed in as</dt>
-                <dd className="mt-1 break-words text-base font-semibold text-gray-950">
+                <dt className="text-sm font-medium text-black">Signed in as</dt>
+                <dd className="mt-1 break-words text-base font-semibold text-black">
                   {email}
                 </dd>
               </dl>
@@ -151,7 +151,7 @@ export default async function AccountPage() {
             <form action={signOut}>
               <button
                 type="submit"
-                className="rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-950 transition hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2"
+                className="rounded-md border border-sage-300 bg-surface px-4 py-2.5 text-sm font-semibold text-black transition hover:bg-sage-100 focus:outline-none focus:ring-2 focus:ring-sage-950 focus:ring-offset-2"
               >
                 Sign out
               </button>
@@ -159,7 +159,7 @@ export default async function AccountPage() {
           </div>
         </div>
 
-        <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-8">
+        <div className="mt-6 rounded-2xl border border-sage-200 bg-surface p-5 shadow-sm sm:p-8">
           <MyListings listings={listings} loadError={loadError} />
         </div>
       </section>

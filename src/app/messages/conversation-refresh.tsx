@@ -32,7 +32,7 @@ export function ConversationRefresh() {
       type="button"
       onClick={refresh}
       disabled={isRefreshing}
-      className="text-sm font-semibold text-gray-600 underline transition hover:text-gray-950 disabled:cursor-wait disabled:text-gray-400"
+      className="text-sm font-semibold text-black underline transition hover:text-black disabled:cursor-wait disabled:text-black"
     >
       {isRefreshing ? "Refreshing…" : "Refresh messages"}
     </button>

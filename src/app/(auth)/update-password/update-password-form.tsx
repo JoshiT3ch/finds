@@ -18,12 +18,12 @@ export function UpdatePasswordForm() {
   const isError = state.status === "error";
 
   return (
-    <div className="w-full max-w-md rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+    <div className="w-full max-w-md rounded-lg border border-sage-200 bg-surface p-6 shadow-sm">
       <div className="mb-6">
-        <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+        <p className="text-sm font-semibold uppercase tracking-wide text-black">
           Finds account
         </p>
-        <h1 className="mt-2 text-3xl font-bold text-gray-950">
+        <h1 className="mt-2 text-3xl font-bold text-black">
           Choose a new password
         </h1>
       </div>
@@ -34,8 +34,8 @@ export function UpdatePasswordForm() {
           role={isError ? "alert" : "status"}
           className={`mb-5 rounded-md border px-4 py-3 text-sm ${
             isError
-              ? "border-red-200 bg-red-50 text-red-800"
-              : "border-green-200 bg-green-50 text-green-800"
+              ? "border-red-200 bg-red-50 text-black"
+              : "border-green-200 bg-green-50 text-black"
           }`}
         >
           {state.message}
@@ -46,7 +46,7 @@ export function UpdatePasswordForm() {
         <div>
           <label
             htmlFor="update-password-password"
-            className="block text-sm font-medium text-gray-800"
+            className="block text-sm font-medium text-black"
           >
             New password
           </label>
@@ -63,12 +63,12 @@ export function UpdatePasswordForm() {
                 ? "update-password-password-error"
                 : undefined
             }
-            className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-950 shadow-sm outline-none transition focus:border-gray-950 focus:ring-2 focus:ring-gray-950/10"
+            className="mt-2 block w-full rounded-md border border-sage-300 bg-surface px-3 py-2 text-black shadow-sm outline-none transition focus:border-sage-950 focus:ring-2 focus:ring-sage-950/10"
           />
           {state.fieldErrors?.password ? (
             <p
               id="update-password-password-error"
-              className="mt-2 text-sm text-red-700"
+              className="mt-2 text-sm text-black"
             >
               {state.fieldErrors.password}
             </p>
@@ -78,7 +78,7 @@ export function UpdatePasswordForm() {
         <div>
           <label
             htmlFor="update-password-confirm-password"
-            className="block text-sm font-medium text-gray-800"
+            className="block text-sm font-medium text-black"
           >
             Confirm new password
           </label>
@@ -95,12 +95,12 @@ export function UpdatePasswordForm() {
                 ? "update-password-confirm-password-error"
                 : undefined
             }
-            className="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-950 shadow-sm outline-none transition focus:border-gray-950 focus:ring-2 focus:ring-gray-950/10"
+            className="mt-2 block w-full rounded-md border border-sage-300 bg-surface px-3 py-2 text-black shadow-sm outline-none transition focus:border-sage-950 focus:ring-2 focus:ring-sage-950/10"
           />
           {state.fieldErrors?.confirmPassword ? (
             <p
               id="update-password-confirm-password-error"
-              className="mt-2 text-sm text-red-700"
+              className="mt-2 text-sm text-black"
             >
               {state.fieldErrors.confirmPassword}
             </p>
@@ -110,17 +110,17 @@ export function UpdatePasswordForm() {
         <button
           type="submit"
           disabled={isPending}
-          className="w-full rounded-md bg-gray-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-400"
+          className="w-full rounded-md bg-sage-300 px-4 py-2.5 text-sm font-semibold text-black transition hover:bg-sage-400 focus:outline-none focus:ring-2 focus:ring-sage-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-sage-400"
         >
           {isPending ? "Updating password..." : "Update password"}
         </button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-gray-600">
+      <p className="mt-6 text-center text-sm text-black">
         Need a new link?{" "}
         <Link
           href="/forgot-password"
-          className="font-semibold text-gray-950 underline"
+          className="font-semibold text-black underline"
         >
           Request another reset email
         </Link>

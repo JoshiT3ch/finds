@@ -11,7 +11,7 @@ export default async function SignupPage(props: PageProps<"/signup">) {
   const next = getSafeRedirectPath(getSearchParam(searchParams.next));
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-10 text-gray-950 sm:px-6 lg:px-8">
+    <main className="flex min-h-screen items-center justify-center bg-sage-50 px-4 py-10 text-black sm:px-6 lg:px-8">
       <SignupForm next={next} />
     </main>
   );

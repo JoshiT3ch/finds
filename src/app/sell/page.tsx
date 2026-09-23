@@ -15,14 +15,14 @@ export default async function SellPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Header />
       <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-10 max-w-2xl">
-          <h1 className="mb-2 text-3xl font-bold text-gray-900">
+          <h1 className="mb-2 text-3xl font-bold text-black">
             Sell your find
           </h1>
-          <p className="text-gray-600">
+          <p className="text-black">
             Give a pre-loved piece a new home. Add the details below to prepare
             your Finds listing.
           </p>

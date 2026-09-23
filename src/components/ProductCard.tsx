@@ -25,8 +25,8 @@ export default function ProductCard({ listing }: ProductCardProps) {
   }).format(listing.price);
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white transition hover:shadow-lg">
-      <div className="relative flex h-64 items-center justify-center overflow-hidden bg-gray-100">
+    <div className="overflow-hidden rounded-2xl border border-sage-300 bg-surface shadow-sm shadow-sage-900/5 transition hover:border-sage-400 hover:shadow-lg hover:shadow-sage-900/10">
+      <div className="relative flex h-64 items-center justify-center overflow-hidden bg-sage-100">
         {listing.image?.startsWith("https://") ? (
           <Image
             src={listing.image}
@@ -38,31 +38,31 @@ export default function ProductCard({ listing }: ProductCardProps) {
         ) : listing.image ? (
           <div className="text-6xl">{listing.image}</div>
         ) : (
-          <div className="px-6 text-center text-sm font-medium text-gray-500">
+          <div className="px-6 text-center text-sm font-medium text-black">
             Image unavailable
           </div>
         )}
       </div>
 
       <div className="p-4">
-        <h3 className="mb-2 line-clamp-2 font-semibold text-gray-900">
+        <h3 className="mb-2 line-clamp-2 font-semibold text-black">
           {listing.name}
         </h3>
 
         <div className="mb-3 flex items-baseline gap-2">
-          <span className="text-xl font-bold text-gray-900">
+          <span className="text-xl font-bold text-black">
             {formattedPrice}
           </span>
         </div>
 
-        <div className="space-y-1 text-sm text-gray-600">
+        <div className="space-y-1 text-sm text-black">
           <p>Size: {listing.size}</p>
           <p>Condition: {listing.condition}</p>
         </div>
 
         <Link
           href={`/items/${itemIdentifier}`}
-          className="mt-4 block w-full rounded-lg bg-gray-900 py-2 text-center text-sm font-medium text-white transition hover:bg-gray-800"
+          className="mt-4 block w-full rounded-lg bg-sage-300 py-2 text-center text-sm font-medium text-black transition hover:bg-sage-400"
         >
           View Item
         </Link>

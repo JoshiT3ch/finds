@@ -31,7 +31,7 @@ export default function ItemActions({
             type="submit"
             disabled={isMessagePending}
             aria-label="Message the seller about this item"
-            className="w-full rounded-lg bg-gray-900 px-6 py-3 text-base font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
+            className="w-full rounded-lg bg-sage-300 px-6 py-3 text-base font-semibold text-black transition hover:bg-sage-400 disabled:cursor-not-allowed disabled:bg-sage-400"
           >
             {isMessagePending ? "Opening conversation…" : "Message Seller"}
           </button>
@@ -39,25 +39,25 @@ export default function ItemActions({
       ) : listingId && !isOwnListing ? (
         <Link
           href={`/login?next=${encodeURIComponent(`/items/${listingId}`)}`}
-          className="block w-full rounded-lg bg-gray-900 px-6 py-3 text-center text-base font-semibold text-white transition hover:bg-gray-800"
+          className="block w-full rounded-lg bg-sage-300 px-6 py-3 text-center text-base font-semibold text-black transition hover:bg-sage-400"
         >
           Log in to message seller
         </Link>
       ) : isOwnListing ? (
         <Link
           href="/account"
-          className="block w-full rounded-lg bg-gray-900 px-6 py-3 text-center text-base font-semibold text-white transition hover:bg-gray-800"
+          className="block w-full rounded-lg bg-sage-300 px-6 py-3 text-center text-base font-semibold text-black transition hover:bg-sage-400"
         >
           Manage your listing
         </Link>
       ) : (
-        <p className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-600">
+        <p className="rounded-lg border border-sage-200 bg-sage-50 px-4 py-3 text-sm text-black">
           Messaging is available on current marketplace listings.
         </p>
       )}
 
       {messageState.status === "error" ? (
-        <p className="text-sm text-red-700" role="alert">
+        <p className="text-sm text-black" role="alert">
           {messageState.message}
         </p>
       ) : null}
@@ -67,14 +67,14 @@ export default function ItemActions({
         aria-label={isSaved ? "Remove from saves" : "Save this item"}
         className={`w-full px-6 py-3 rounded-lg font-semibold transition text-base border-2 ${
           isSaved
-            ? "bg-red-50 text-red-600 border-red-200 hover:bg-red-100"
-            : "bg-white text-gray-600 border-gray-300 hover:border-gray-400 hover:bg-gray-50"
+            ? "bg-red-50 text-black border-red-200 hover:bg-red-100"
+            : "bg-surface text-black border-sage-300 hover:border-sage-400 hover:bg-sage-50"
         }`}
       >
         {isSaved ? "♥ Saved" : "♡ Save Item"}
       </button>
       {isSaved && (
-        <p className="text-sm text-gray-600" role="status">
+        <p className="text-sm text-black" role="status">
           Saved for this session only. Account-based saves will come later.
         </p>
       )}

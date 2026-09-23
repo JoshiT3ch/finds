@@ -127,20 +127,20 @@ export default async function BackendTestPage() {
       : null;
 
   return (
-    <main className="min-h-screen bg-white px-4 py-10 text-gray-900 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-background px-4 py-10 text-black sm:px-6 lg:px-8">
       <section className="mx-auto max-w-3xl">
-        <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500">
+        <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-black">
           Backend connection test
         </p>
         <h1 className="mb-6 text-3xl font-bold">Supabase listings read</h1>
 
         {result.status === "success" ? (
           <div className="rounded-lg border border-green-200 bg-green-50 p-6">
-            <p className="mb-6 text-lg font-semibold text-green-800">
+            <p className="mb-6 text-lg font-semibold text-black">
               Supabase connection successful
             </p>
             {imageUrl ? (
-              <div className="relative mb-6 aspect-[4/3] overflow-hidden rounded-lg border border-green-200 bg-white">
+              <div className="relative mb-6 aspect-[4/3] overflow-hidden rounded-lg border border-green-200 bg-surface">
                 <Image
                   src={imageUrl}
                   alt={`${result.listing.title ?? TEST_LISTING_TITLE} listing image`}
@@ -150,7 +150,7 @@ export default async function BackendTestPage() {
                 />
               </div>
             ) : (
-              <div className="mb-6 flex aspect-[4/3] items-center justify-center rounded-lg border border-dashed border-green-300 bg-white px-6 text-center text-sm font-medium text-green-900">
+              <div className="mb-6 flex aspect-[4/3] items-center justify-center rounded-lg border border-dashed border-green-300 bg-surface px-6 text-center text-sm font-medium text-black">
                 Listing image is missing or is not a valid public Supabase
                 Storage URL.
               </div>
@@ -158,10 +158,10 @@ export default async function BackendTestPage() {
             <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {fields.map(([label, key]) => (
                 <div key={key} className="border-t border-green-200 pt-3">
-                  <dt className="text-xs font-semibold uppercase tracking-wide text-green-900">
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-black">
                     {label}
                   </dt>
-                  <dd className="mt-1 break-words text-sm text-gray-800">
+                  <dd className="mt-1 break-words text-sm text-black">
                     {formatValue(result.listing[key])}
                   </dd>
                 </div>
@@ -170,20 +170,20 @@ export default async function BackendTestPage() {
           </div>
         ) : result.status === "empty" ? (
           <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-6">
-            <p className="font-semibold text-yellow-900">
+            <p className="font-semibold text-black">
               Supabase query completed, but the test listing was not found.
             </p>
-            <p className="mt-2 text-sm text-yellow-800">
+            <p className="mt-2 text-sm text-black">
               Expected an available row titled exactly{" "}
               <code>{TEST_LISTING_TITLE}</code> in public.listings.
             </p>
           </div>
         ) : (
           <div className="rounded-lg border border-red-200 bg-red-50 p-6">
-            <p className="font-semibold text-red-900">
+            <p className="font-semibold text-black">
               Supabase connection test failed
             </p>
-            <p className="mt-2 text-sm text-red-800">{result.message}</p>
+            <p className="mt-2 text-sm text-black">{result.message}</p>
           </div>
         )}
       </section>

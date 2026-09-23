@@ -88,10 +88,10 @@ export default function ListingGallery({ images, title }: ListingGalleryProps) {
                 onClick={() => selectImage(index)}
                 aria-label={`Show photo ${index + 1} of ${images.length}`}
                 aria-pressed={selectedIndex === index}
-                className={`relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border-2 bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 sm:h-[72px] sm:w-[72px] ${
+                className={`relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border-2 bg-white transition focus:outline-none focus:ring-2 focus:ring-sage-900 focus:ring-offset-2 sm:h-[72px] sm:w-[72px] ${
                   selectedIndex === index
-                    ? "border-gray-950"
-                    : "border-transparent hover:border-gray-400"
+                    ? "border-sage-950"
+                    : "border-transparent hover:border-sage-400"
                 }`}
               >
                 <Image
@@ -109,7 +109,7 @@ export default function ListingGallery({ images, title }: ListingGalleryProps) {
         <button
           type="button"
           onClick={() => setIsViewerOpen(true)}
-          className="group relative order-1 flex h-96 items-center justify-center overflow-hidden rounded-lg border border-gray-200 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 sm:order-2 sm:h-[500px]"
+          className="group relative order-1 flex h-96 items-center justify-center overflow-hidden rounded-lg border border-sage-200 bg-white focus:outline-none focus:ring-2 focus:ring-sage-900 focus:ring-offset-2 sm:order-2 sm:h-[500px]"
           aria-label={`Open full-screen gallery for ${title}`}
         >
           <Image
@@ -120,7 +120,7 @@ export default function ListingGallery({ images, title }: ListingGalleryProps) {
             sizes="(max-width: 1024px) 100vw, 66vw"
             className="object-contain"
           />
-          <span className="absolute bottom-4 right-4 rounded-full bg-black/75 px-3 py-1.5 text-xs font-semibold text-white opacity-0 transition group-hover:opacity-100 group-focus-visible:opacity-100">
+          <span className="absolute bottom-4 right-4 rounded-full bg-sage-300 px-3 py-1.5 text-xs font-semibold text-black opacity-0 transition group-hover:opacity-100 group-focus-visible:opacity-100">
             View full screen
           </span>
         </button>
@@ -133,14 +133,14 @@ export default function ListingGallery({ images, title }: ListingGalleryProps) {
           aria-label={`${title} photo gallery`}
           className="fixed inset-0 z-[100] bg-white"
         >
-          <div className="pointer-events-none fixed inset-x-0 top-0 z-[102] flex items-center justify-between bg-gradient-to-b from-black/55 to-transparent px-4 pb-12 pt-4 text-white sm:px-6">
+          <div className="pointer-events-none fixed inset-x-0 top-0 z-[102] flex items-center justify-between bg-gradient-to-b from-sage-200 to-transparent px-4 pb-12 pt-4 text-black sm:px-6">
             <p className="text-sm font-semibold" aria-live="polite">
               Photo {selectedIndex + 1} of {images.length}
             </p>
             <button
               type="button"
               onClick={() => setIsViewerOpen(false)}
-              className="pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full bg-black/70 text-2xl text-white transition hover:bg-black focus:outline-none focus:ring-2 focus:ring-white"
+              className="pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full bg-sage-300 text-2xl text-black transition hover:bg-sage-400 focus:outline-none focus:ring-2 focus:ring-sage-50"
               aria-label="Close full-screen gallery"
             >
               <span aria-hidden="true">×</span>
@@ -183,7 +183,7 @@ export default function ListingGallery({ images, title }: ListingGalleryProps) {
           </div>
 
           {images.length > 1 ? (
-            <div className="fixed bottom-4 left-1/2 z-[102] flex max-w-[calc(100vw-2rem)] -translate-x-1/2 gap-2 overflow-x-auto rounded-lg bg-black/70 p-2 lg:bottom-auto lg:left-auto lg:right-5 lg:top-1/2 lg:max-h-[70vh] lg:max-w-none lg:-translate-y-1/2 lg:translate-x-0 lg:flex-col lg:overflow-y-auto">
+            <div className="fixed bottom-4 left-1/2 z-[102] flex max-w-[calc(100vw-2rem)] -translate-x-1/2 gap-2 overflow-x-auto rounded-lg bg-sage-300 p-2 lg:bottom-auto lg:left-auto lg:right-5 lg:top-1/2 lg:max-h-[70vh] lg:max-w-none lg:-translate-y-1/2 lg:translate-x-0 lg:flex-col lg:overflow-y-auto">
               {images.map((image, index) => (
                 <button
                   key={`${image}-viewer-thumbnail`}
@@ -191,9 +191,9 @@ export default function ListingGallery({ images, title }: ListingGalleryProps) {
                   onClick={() => selectImage(index)}
                   aria-label={`Go to photo ${index + 1}`}
                   aria-pressed={selectedIndex === index}
-                  className={`relative h-14 w-14 flex-shrink-0 overflow-hidden rounded border-2 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-white ${
+                  className={`relative h-14 w-14 flex-shrink-0 overflow-hidden rounded border-2 bg-white focus:outline-none focus:ring-2 focus:ring-sage-50 ${
                     selectedIndex === index
-                      ? "border-white"
+                      ? "border-sage-50"
                       : "border-transparent opacity-70 hover:opacity-100"
                   }`}
                 >
@@ -210,7 +210,7 @@ export default function ListingGallery({ images, title }: ListingGalleryProps) {
           ) : null}
 
           {images.length > 1 ? (
-            <p className="pointer-events-none fixed bottom-4 left-5 z-[101] hidden rounded-full bg-black/70 px-3 py-1.5 text-xs font-medium text-white sm:block lg:left-1/2 lg:-translate-x-1/2">
+            <p className="pointer-events-none fixed bottom-4 left-5 z-[101] hidden rounded-full bg-sage-300 px-3 py-1.5 text-xs font-medium text-black sm:block lg:left-1/2 lg:-translate-x-1/2">
               Scroll or use arrow keys for the next photo
             </p>
           ) : null}

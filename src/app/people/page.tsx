@@ -62,35 +62,35 @@ export default async function PeoplePage(props: {
   const { profiles, loadError } = await getPeople(search);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-sage-50">
       <Header />
       <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-        <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+        <p className="text-sm font-semibold uppercase tracking-wide text-black">
           Community
         </p>
-        <h1 className="mt-2 text-3xl font-bold text-gray-950">
+        <h1 className="mt-2 text-3xl font-bold text-black">
           {search ? `People matching “${search}”` : "People on Finds"}
         </h1>
-        <p className="mt-2 text-gray-600">
+        <p className="mt-2 text-black">
           Search public display names from buyers and sellers.
         </p>
 
         {loadError ? (
           <div
             role="alert"
-            className="mt-8 rounded-lg border border-red-200 bg-red-50 p-6 text-red-900"
+            className="mt-8 rounded-lg border border-red-200 bg-red-50 p-6 text-black"
           >
             <h2 className="font-semibold">We could not search people.</h2>
-            <p className="mt-2 text-sm text-red-800">
+            <p className="mt-2 text-sm text-black">
               Refresh the page and try again in a moment.
             </p>
           </div>
         ) : profiles.length === 0 ? (
-          <div className="mt-8 rounded-lg border border-gray-200 bg-white p-10 text-center shadow-sm">
-            <h2 className="text-lg font-semibold text-gray-950">
+          <div className="mt-8 rounded-lg border border-sage-200 bg-surface p-10 text-center shadow-sm">
+            <h2 className="text-lg font-semibold text-black">
               {search ? "No people found" : "No public profiles yet"}
             </h2>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-black">
               {search
                 ? "Try another display name in the search bar."
                 : "New members will appear here after choosing a display name."}
@@ -101,16 +101,16 @@ export default async function PeoplePage(props: {
             {profiles.map((profile) => (
               <li
                 key={profile.id}
-                className="flex items-center gap-4 rounded-lg border border-gray-200 bg-white p-5 shadow-sm"
+                className="flex items-center gap-4 rounded-lg border border-sage-200 bg-surface p-5 shadow-sm"
               >
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-900 text-lg font-bold text-white">
+                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-sage-300 text-lg font-bold text-black">
                   {profile.display_name.charAt(0).toUpperCase()}
                 </div>
                 <div className="min-w-0">
-                  <p className="truncate font-semibold text-gray-950">
+                  <p className="truncate font-semibold text-black">
                     {profile.display_name}
                   </p>
-                  <p className="mt-1 text-sm text-gray-500">Finds member</p>
+                  <p className="mt-1 text-sm text-black">Finds member</p>
                 </div>
               </li>
             ))}

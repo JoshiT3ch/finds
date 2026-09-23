@@ -127,11 +127,11 @@ function ListingImage({ listing }: { listing: DetailListing }) {
   }
 
   return (
-    <div className="flex h-96 items-center justify-center overflow-hidden rounded-lg border border-gray-200 bg-gray-100 sm:h-[500px]">
+    <div className="flex h-96 items-center justify-center overflow-hidden rounded-lg border border-sage-200 bg-white sm:h-[500px]">
       {listing.image ? (
         <div className="text-9xl">{listing.image}</div>
       ) : (
-        <div className="px-6 text-center text-sm font-medium text-gray-500">
+        <div className="px-6 text-center text-sm font-medium text-black">
           Image unavailable
         </div>
       )}
@@ -164,7 +164,7 @@ function ItemDetail({
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <Link
           href="/browse"
-          className="mb-8 inline-flex items-center gap-2 font-medium text-gray-600 transition hover:text-gray-900"
+          className="mb-8 inline-flex items-center gap-2 font-medium text-black transition hover:text-black"
         >
           <span aria-hidden="true">←</span>
           Back to Browse
@@ -177,66 +177,66 @@ function ItemDetail({
 
           <div className="lg:col-span-1">
             <div className="mb-4">
-              <span className="inline-block rounded-full bg-gray-900 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+              <span className="inline-block rounded-full bg-sage-300 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-black">
                 {listing.department ? `${listing.department} · ` : ""}{listing.category}
               </span>
             </div>
-            <h1 className="mb-2 text-2xl font-bold leading-tight text-gray-900 sm:text-3xl">
+            <h1 className="mb-2 text-2xl font-bold leading-tight text-black sm:text-3xl">
               {listing.name}
             </h1>
             {listing.brand ? (
-              <p className="mb-4 text-sm font-medium text-gray-500">
+              <p className="mb-4 text-sm font-medium text-black">
                 {listing.brand}
               </p>
             ) : null}
-            <div className="mb-6 border-b border-gray-200 pb-6">
-              <p className="text-3xl font-bold text-gray-900 sm:text-4xl">
+            <div className="mb-6 border-b border-sage-200 pb-6">
+              <p className="text-3xl font-bold text-black sm:text-4xl">
                 {formattedPrice}
               </p>
             </div>
 
-            <div className="mb-6 grid grid-cols-2 gap-4 border-b border-gray-200 pb-6">
+            <div className="mb-6 grid grid-cols-2 gap-4 border-b border-sage-200 pb-6">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <p className="text-xs font-semibold uppercase tracking-wide text-black">
                   Size
                 </p>
-                <p className="mt-1 text-base font-medium text-gray-900">
+                <p className="mt-1 text-base font-medium text-black">
                   {listing.size}
                 </p>
               </div>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <p className="text-xs font-semibold uppercase tracking-wide text-black">
                   Condition
                 </p>
-                <p className="mt-1 text-base font-medium text-gray-900">
+                <p className="mt-1 text-base font-medium text-black">
                   {listing.condition}
                 </p>
               </div>
               <div className="col-span-2">
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <p className="text-xs font-semibold uppercase tracking-wide text-black">
                   Location
                 </p>
-                <p className="mt-1 text-base font-medium text-gray-900">
+                <p className="mt-1 text-base font-medium text-black">
                   {listing.location}
                 </p>
               </div>
             </div>
 
-            <div className="mb-6 border-b border-gray-200 pb-6">
-              <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-700">
+            <div className="mb-6 border-b border-sage-200 pb-6">
+              <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-black">
                 Details
               </h2>
-              <p className="text-sm leading-relaxed text-gray-600">
+              <p className="text-sm leading-relaxed text-black">
                 {listing.description}
               </p>
             </div>
 
             {listing.flaws ? (
-              <div className="mb-6 border-b border-gray-200 pb-6">
-                <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-700">
+              <div className="mb-6 border-b border-sage-200 pb-6">
+                <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-black">
                   Flaws
                 </h2>
-                <p className="text-sm leading-relaxed text-gray-600">
+                <p className="text-sm leading-relaxed text-black">
                   {listing.flaws}
                 </p>
               </div>
@@ -245,21 +245,21 @@ function ItemDetail({
             {showActions ? (
               <>
                 {listing.sellerName ? (
-                  <div className="mb-6 border-b border-gray-200 pb-6">
-                    <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-700">
+                  <div className="mb-6 border-b border-sage-200 pb-6">
+                    <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-black">
                       Seller
                     </h2>
                     <div className="flex items-start gap-3">
-                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-300">
-                        <span className="text-lg font-bold text-gray-700">
+                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-sage-300">
+                        <span className="text-lg font-bold text-black">
                           {sellerInitial}
                         </span>
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-gray-900">
+                        <p className="text-sm font-semibold text-black">
                           {listing.sellerName}
                         </p>
-                        <p className="mt-0.5 text-xs text-gray-600">
+                        <p className="mt-0.5 text-xs text-black">
                           {listing.location}
                         </p>
                       </div>
@@ -279,8 +279,8 @@ function ItemDetail({
         </div>
 
         {relatedListings.length > 0 ? (
-          <section className="border-t border-gray-200 pt-16">
-            <h2 className="mb-8 text-2xl font-bold text-gray-900">
+          <section className="border-t border-sage-200 pt-16">
+            <h2 className="mb-8 text-2xl font-bold text-black">
               Related Finds
             </h2>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -301,15 +301,15 @@ function ListingError() {
     <div className="min-h-screen bg-white">
       <Header />
       <main className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 lg:px-8">
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-black">
           We could not load this listing.
         </h1>
-        <p className="mt-3 text-gray-600">
+        <p className="mt-3 text-black">
           Please try again in a moment or return to Browse.
         </p>
         <Link
           href="/browse"
-          className="mt-8 inline-flex rounded-lg bg-gray-900 px-6 py-3 font-semibold text-white transition hover:bg-gray-800"
+          className="mt-8 inline-flex rounded-lg bg-sage-300 px-6 py-3 font-semibold text-black transition hover:bg-sage-400"
         >
           Back to Browse
         </Link>

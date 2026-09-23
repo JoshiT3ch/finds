@@ -128,10 +128,10 @@ export function BrowseClient({
   return (
     <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="mb-2 text-3xl font-bold text-gray-900">
+          <h1 className="mb-2 text-3xl font-bold text-black">
             Browse Finds
           </h1>
-          <p className="text-gray-600">
+          <p className="text-black">
             {loadError
               ? "Discover unique second-hand, thrifted, and vintage clothing."
               : `Discover ${listings.length} unique second-hand, thrifted, and vintage clothing items.`}
@@ -141,7 +141,7 @@ export function BrowseClient({
         {showCreatedMessage ? (
           <div
             role="status"
-            className="mb-8 rounded-lg border border-green-200 bg-green-50 p-4 text-sm font-medium text-green-800"
+            className="mb-8 rounded-lg border border-green-200 bg-green-50 p-4 text-sm font-medium text-black"
           >
             Your listing was published successfully.
           </div>
@@ -150,26 +150,26 @@ export function BrowseClient({
         {loadError ? (
           <div
             role="alert"
-            className="rounded-lg border border-red-200 bg-red-50 p-6 text-red-900"
+            className="rounded-lg border border-red-200 bg-red-50 p-6 text-black"
           >
             <h2 className="font-semibold">We could not load the listings.</h2>
-            <p className="mt-2 text-sm text-red-800">
+            <p className="mt-2 text-sm text-black">
               Please refresh the page and try again in a moment.
             </p>
           </div>
         ) : (
           <>
-            <div className="mb-8 rounded-lg border border-gray-200 bg-gray-50 p-6">
+            <div className="mb-8 rounded-2xl border border-sage-300 bg-sage-100 p-6 text-black scheme-light">
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 <div>
-                  <label htmlFor="department" className="mb-2 block text-sm font-medium text-gray-700">
+                  <label htmlFor="department" className="mb-2 block text-sm font-medium text-black">
                     Who is it for?
                   </label>
                   <select
                     id="department"
                     value={selectedDepartment}
                     onChange={(event) => setSelectedDepartment(event.target.value)}
-                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-gray-900"
+                    className="w-full rounded-lg border border-sage-300 bg-surface px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-sage-900"
                   >
                     <option value="">Everyone</option>
                     {departments.map((department) => (
@@ -180,7 +180,7 @@ export function BrowseClient({
                 <div>
                   <label
                     htmlFor="search"
-                    className="mb-2 block text-sm font-medium text-gray-700"
+                    className="mb-2 block text-sm font-medium text-black"
                   >
                     Search
                   </label>
@@ -190,14 +190,14 @@ export function BrowseClient({
                     placeholder="Search by item name..."
                     value={searchQuery}
                     onChange={(event) => setSearchQuery(event.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-gray-900"
+                    className="w-full rounded-lg border border-sage-300 bg-surface px-4 py-2 outline-none transition placeholder:text-black focus:border-transparent focus:ring-2 focus:ring-sage-900"
                   />
                 </div>
 
                 <div>
                   <label
                     htmlFor="category"
-                    className="mb-2 block text-sm font-medium text-gray-700"
+                    className="mb-2 block text-sm font-medium text-black"
                   >
                     Category
                   </label>
@@ -207,7 +207,7 @@ export function BrowseClient({
                     onChange={(event) =>
                       setSelectedCategory(event.target.value)
                     }
-                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-gray-900"
+                    className="w-full rounded-lg border border-sage-300 bg-surface px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-sage-900"
                   >
                     <option value="">All Categories</option>
                     {categories.map((category) => (
@@ -221,7 +221,7 @@ export function BrowseClient({
                 <div>
                   <label
                     htmlFor="size"
-                    className="mb-2 block text-sm font-medium text-gray-700"
+                    className="mb-2 block text-sm font-medium text-black"
                   >
                     Size
                   </label>
@@ -229,7 +229,7 @@ export function BrowseClient({
                     id="size"
                     value={selectedSize}
                     onChange={(event) => setSelectedSize(event.target.value)}
-                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-gray-900"
+                    className="w-full rounded-lg border border-sage-300 bg-surface px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-sage-900"
                   >
                     <option value="">All Sizes</option>
                     {sizes.map((size) => (
@@ -243,7 +243,7 @@ export function BrowseClient({
                 <div>
                   <label
                     htmlFor="condition"
-                    className="mb-2 block text-sm font-medium text-gray-700"
+                    className="mb-2 block text-sm font-medium text-black"
                   >
                     Condition
                   </label>
@@ -253,7 +253,7 @@ export function BrowseClient({
                     onChange={(event) =>
                       setSelectedCondition(event.target.value)
                     }
-                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-gray-900"
+                    className="w-full rounded-lg border border-sage-300 bg-surface px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-sage-900"
                   >
                     <option value="">All Conditions</option>
                     {conditions.map((condition) => (
@@ -267,7 +267,7 @@ export function BrowseClient({
                 <div>
                   <label
                     htmlFor="sort"
-                    className="mb-2 block text-sm font-medium text-gray-700"
+                    className="mb-2 block text-sm font-medium text-black"
                   >
                     Sort
                   </label>
@@ -277,7 +277,7 @@ export function BrowseClient({
                     onChange={(event) =>
                       setSortOrder(event.target.value as SortOrder)
                     }
-                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-gray-900"
+                    className="w-full rounded-lg border border-sage-300 bg-surface px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-sage-900"
                   >
                     <option value="newest">Newest first</option>
                     <option value="price-ascending">
@@ -294,7 +294,7 @@ export function BrowseClient({
                 <div className="mt-4">
                   <button
                     onClick={resetFilters}
-                    className="text-sm font-medium text-gray-600 underline transition hover:text-gray-900"
+                    className="text-sm font-medium text-black underline transition hover:text-black"
                     aria-label="Reset all filters"
                   >
                     Clear all filters
@@ -304,7 +304,7 @@ export function BrowseClient({
             </div>
 
             <div className="mb-6">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-black">
                 {filteredListings.length} of {listings.length} items
                 {hasActiveFilters && " shown"}
               </p>
@@ -318,12 +318,12 @@ export function BrowseClient({
               </div>
             ) : hasActiveFilters ? (
               <div className="py-12 text-center">
-                <p className="mb-4 text-gray-600">
+                <p className="mb-4 text-black">
                   No items found matching your filters.
                 </p>
                 <button
                   onClick={resetFilters}
-                  className="font-medium text-gray-900 transition hover:underline"
+                  className="font-medium text-black transition hover:underline"
                   aria-label="Reset filters and try again"
                 >
                   Clear filters and try again
@@ -331,10 +331,10 @@ export function BrowseClient({
               </div>
             ) : (
               <div className="py-12 text-center">
-                <h2 className="font-semibold text-gray-900">
+                <h2 className="font-semibold text-black">
                   No available listings yet.
                 </h2>
-                <p className="mt-2 text-gray-600">
+                <p className="mt-2 text-black">
                   Check back soon for newly published finds.
                 </p>
               </div>

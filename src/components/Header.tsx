@@ -20,13 +20,13 @@ export default async function Header() {
   const listItemHref = isSignedIn ? "/sell" : "/login?next=/sell";
 
   return (
-    <header className="relative z-40 border-b border-gray-200 bg-white">
+    <header className="relative z-40 border-b border-sage-300 bg-surface">
       <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-4">
           <div className="flex-shrink-0">
             <Link
               href="/"
-              className="text-2xl font-bold text-gray-900 hover:text-gray-700"
+              className="text-2xl font-bold text-black hover:text-black"
             >
               Finds
             </Link>
@@ -37,25 +37,31 @@ export default async function Header() {
           </div>
 
           <nav
-            className="hidden items-center gap-5 lg:flex"
+            className="hidden shrink-0 items-center gap-5 lg:flex"
             aria-label="Main navigation"
           >
             <Link
               href="/browse"
-              className="text-sm font-medium text-gray-700 transition hover:text-gray-900"
+              className="text-sm font-medium text-black transition hover:text-black"
             >
               Browse
             </Link>
             <Link
               href="/sell"
-              className="text-sm font-medium text-gray-700 transition hover:text-gray-900"
+              className="text-sm font-medium text-black transition hover:text-black"
             >
               Sell
+            </Link>
+            <Link
+              href="/how-it-works"
+              className="whitespace-nowrap text-sm font-medium text-black underline-offset-4 hover:underline"
+            >
+              How it Works
             </Link>
             {isSignedIn ? (
               <Link
                 href="/messages"
-                className="text-sm font-medium text-gray-700 transition hover:text-gray-900"
+                className="text-sm font-medium text-black transition hover:text-black"
               >
                 Messages
               </Link>
@@ -63,14 +69,14 @@ export default async function Header() {
             {isSignedIn ? (
               <Link
                 href="/account"
-                className="text-sm font-medium text-gray-700 transition hover:text-gray-900 sm:hidden"
+                className="text-sm font-medium text-black transition hover:text-black sm:hidden"
               >
                 Account
               </Link>
             ) : (
               <Link
                 href="/login"
-                className="text-sm font-medium text-gray-700 transition hover:text-gray-900 sm:hidden"
+                className="text-sm font-medium text-black transition hover:text-black sm:hidden"
               >
                 Log in
               </Link>
@@ -82,14 +88,14 @@ export default async function Header() {
               <>
                 <Link
                   href="/account"
-                  className="hidden text-sm font-medium text-gray-700 transition hover:text-gray-900 sm:block"
+                  className="hidden text-sm font-medium text-black transition hover:text-black sm:block"
                 >
                   Account
                 </Link>
                 <form action={signOut} className="hidden sm:block">
                   <button
                     type="submit"
-                    className="text-sm font-medium text-gray-700 transition hover:text-gray-900"
+                    className="text-sm font-medium text-black transition hover:text-black"
                   >
                     Sign out
                   </button>
@@ -97,7 +103,7 @@ export default async function Header() {
                 <form action={signOut} className="sm:hidden">
                   <button
                     type="submit"
-                    className="text-xs font-medium text-gray-700 transition hover:text-gray-900"
+                    className="text-xs font-medium text-black transition hover:text-black"
                   >
                     Sign out
                   </button>
@@ -106,7 +112,7 @@ export default async function Header() {
             ) : (
               <Link
                 href="/login"
-                className="hidden text-sm font-medium text-gray-700 transition hover:text-gray-900 sm:block"
+                className="hidden text-sm font-medium text-black transition hover:text-black sm:block"
               >
                 Log in
               </Link>
@@ -114,7 +120,7 @@ export default async function Header() {
 
             <Link
               href={listItemHref}
-              className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
+              className="rounded-lg bg-sage-300 px-4 py-2 text-sm font-medium text-black transition hover:bg-sage-400"
             >
               List an Item
             </Link>
@@ -122,6 +128,14 @@ export default async function Header() {
         </div>
         <div className="mt-3 md:hidden">
           <HeaderSearch />
+        </div>
+        <div className="mt-3 flex justify-end lg:hidden">
+          <Link
+            href="/how-it-works"
+            className="text-sm font-medium text-black underline-offset-4 hover:underline"
+          >
+            How it Works
+          </Link>
         </div>
       </div>
       <CategoryNav />

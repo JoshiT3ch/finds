@@ -59,10 +59,10 @@ export default async function FeaturedFinds() {
   return (
     <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-8 flex items-baseline justify-between gap-4">
-        <h2 className="text-2xl font-bold text-gray-900">Featured Finds</h2>
+        <h2 className="text-2xl font-bold text-black">Featured Finds</h2>
         <Link
           href="/browse"
-          className="text-sm font-medium text-gray-600 underline transition hover:text-gray-900"
+          className="text-sm font-medium text-black underline transition hover:text-black"
         >
           View all
         </Link>
@@ -71,10 +71,10 @@ export default async function FeaturedFinds() {
       {result.status === "error" ? (
         <div
           role="alert"
-          className="rounded-lg border border-red-200 bg-red-50 p-6 text-red-900"
+          className="rounded-lg border border-red-200 bg-red-50 p-6 text-black"
         >
           <h3 className="font-semibold">We could not load featured finds.</h3>
-          <p className="mt-2 text-sm text-red-800">
+          <p className="mt-2 text-sm text-black">
             Please refresh the page or browse all available listings.
           </p>
           <Link
@@ -91,23 +91,23 @@ export default async function FeaturedFinds() {
           ))}
         </div>
       ) : (
-        <div className="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center">
-          <h3 className="font-semibold text-gray-900">
+        <div className="rounded-lg border border-sage-200 bg-sage-50 p-8 text-center">
+          <h3 className="font-semibold text-black">
             No featured finds yet.
           </h3>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm text-black">
             Check back soon, or be the first to list an item.
           </p>
           <div className="mt-5 flex justify-center gap-3">
             <Link
               href="/browse"
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-white"
+              className="rounded-lg border border-sage-300 px-4 py-2 text-sm font-semibold text-black transition hover:bg-surface"
             >
               Browse listings
             </Link>
             <Link
               href="/sell"
-              className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-800"
+              className="rounded-lg bg-sage-300 px-4 py-2 text-sm font-semibold text-black transition hover:bg-sage-400"
             >
               List an Item
             </Link>

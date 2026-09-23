@@ -35,7 +35,7 @@ const initialState: CreateListingState = {
 };
 
 const inputClassName =
-  "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-gray-900 focus:ring-2 focus:ring-gray-200";
+  "w-full rounded-lg border border-sage-300 bg-surface px-4 py-3 text-black outline-none transition focus:border-sage-900 focus:ring-2 focus:ring-sage-200";
 
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
 const MAX_LISTING_IMAGES = 5;
@@ -214,7 +214,7 @@ export function SellForm() {
     visibleErrors[field] ? (
       <p
         id={`${field}-error`}
-        className="mt-1 text-sm text-red-600"
+        className="mt-1 text-sm text-black"
         role="alert"
       >
         {visibleErrors[field]}
@@ -228,13 +228,13 @@ export function SellForm() {
         onSubmit={handleSubmit}
         noValidate
         aria-describedby={messageId}
-        className="rounded-lg border border-gray-200 bg-gray-50 p-5 sm:p-8"
+        className="rounded-lg border border-sage-200 bg-sage-50 p-5 sm:p-8"
       >
         {state.message ? (
           <div
             id={messageId}
             role="alert"
-            className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+            className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-black"
           >
             {state.message}
           </div>
@@ -242,7 +242,7 @@ export function SellForm() {
 
         <div className="grid gap-6 sm:grid-cols-2">
           <div className="sm:col-span-2">
-            <label htmlFor="department" className="mb-2 block text-sm font-medium text-gray-700">
+            <label htmlFor="department" className="mb-2 block text-sm font-medium text-black">
               Who is it for? <span aria-hidden="true">*</span>
             </label>
             <select
@@ -266,7 +266,7 @@ export function SellForm() {
           <div className="sm:col-span-2">
             <label
               htmlFor="title"
-              className="mb-2 block text-sm font-medium text-gray-700"
+              className="mb-2 block text-sm font-medium text-black"
             >
               Item title <span aria-hidden="true">*</span>
             </label>
@@ -290,12 +290,12 @@ export function SellForm() {
           <div>
             <label
               htmlFor="price"
-              className="mb-2 block text-sm font-medium text-gray-700"
+              className="mb-2 block text-sm font-medium text-black"
             >
               Price (&#8369;) <span aria-hidden="true">*</span>
             </label>
             <div className="relative">
-              <span className="pointer-events-none absolute left-4 top-3 text-gray-500">
+              <span className="pointer-events-none absolute left-4 top-3 text-black">
                 &#8369;
               </span>
               <input
@@ -322,7 +322,7 @@ export function SellForm() {
           <div>
             <label
               htmlFor="category"
-              className="mb-2 block text-sm font-medium text-gray-700"
+              className="mb-2 block text-sm font-medium text-black"
             >
               Category <span aria-hidden="true">*</span>
             </label>
@@ -350,7 +350,7 @@ export function SellForm() {
           <div>
             <label
               htmlFor="size"
-              className="mb-2 block text-sm font-medium text-gray-700"
+              className="mb-2 block text-sm font-medium text-black"
             >
               Size <span aria-hidden="true">*</span>
             </label>
@@ -372,7 +372,7 @@ export function SellForm() {
           <div>
             <label
               htmlFor="condition"
-              className="mb-2 block text-sm font-medium text-gray-700"
+              className="mb-2 block text-sm font-medium text-black"
             >
               Condition <span aria-hidden="true">*</span>
             </label>
@@ -400,7 +400,7 @@ export function SellForm() {
           <div>
             <label
               htmlFor="location"
-              className="mb-2 block text-sm font-medium text-gray-700"
+              className="mb-2 block text-sm font-medium text-black"
             >
               Location <span aria-hidden="true">*</span>
             </label>
@@ -424,9 +424,9 @@ export function SellForm() {
           <div>
             <label
               htmlFor="flaws"
-              className="mb-2 block text-sm font-medium text-gray-700"
+              className="mb-2 block text-sm font-medium text-black"
             >
-              Flaws <span className="font-normal text-gray-500">(optional)</span>
+              Flaws <span className="font-normal text-black">(optional)</span>
             </label>
             <input
               id="flaws"
@@ -442,7 +442,7 @@ export function SellForm() {
           <div className="sm:col-span-2">
             <label
               htmlFor="description"
-              className="mb-2 block text-sm font-medium text-gray-700"
+              className="mb-2 block text-sm font-medium text-black"
             >
               Description <span aria-hidden="true">*</span>
             </label>
@@ -468,7 +468,7 @@ export function SellForm() {
             />
             <div className="mt-1 flex justify-between gap-4">
               {fieldError("description") || <span />}
-              <span id="description-count" className="text-sm text-gray-500">
+              <span id="description-count" className="text-sm text-black">
                 {draft.description.length}/500
               </span>
             </div>
@@ -477,11 +477,11 @@ export function SellForm() {
           <div className="sm:col-span-2">
             <label
               htmlFor="images"
-              className="mb-2 block text-sm font-medium text-gray-700"
+              className="mb-2 block text-sm font-medium text-black"
             >
               Photos <span aria-hidden="true">*</span>
             </label>
-            <div className="rounded-lg border-2 border-dashed border-gray-300 bg-white p-6 text-center">
+            <div className="rounded-lg border-2 border-dashed border-sage-300 bg-surface p-6 text-center">
               <input
                 ref={imageInputRef}
                 id="images"
@@ -492,7 +492,7 @@ export function SellForm() {
                 required
                 onChange={handleImageChange}
                 disabled={isPending}
-                className="mx-auto block w-full max-w-sm cursor-pointer rounded-lg border border-gray-300 bg-white text-sm text-gray-700 file:mr-4 file:border-0 file:bg-gray-900 file:px-4 file:py-2.5 file:text-sm file:font-semibold file:text-white hover:file:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-70"
+                className="mx-auto block w-full max-w-sm cursor-pointer rounded-lg border border-sage-300 bg-surface text-sm text-black file:mr-4 file:border-0 file:bg-sage-300 file:px-4 file:py-2.5 file:text-sm file:font-semibold file:text-black hover:file:bg-sage-400 disabled:cursor-not-allowed disabled:opacity-70"
                 aria-required="true"
                 aria-invalid={Boolean(visibleErrors.image)}
                 aria-describedby={
@@ -504,13 +504,13 @@ export function SellForm() {
                 name="coverImageIndex"
                 value={coverImageIndex}
               />
-              <p id="image-requirements" className="mt-3 text-sm text-gray-500">
+              <p id="image-requirements" className="mt-3 text-sm text-black">
                 Add up to {MAX_LISTING_IMAGES} JPEG, PNG, or WebP images. Each
                 image can be up to 5 MB.
               </p>
               {imagePreviews.length > 0 ? (
                 <div className="mt-5">
-                  <p className="text-sm font-medium text-gray-700">
+                  <p className="text-sm font-medium text-black">
                     Choose the cover photo
                   </p>
                   <div className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-5">
@@ -521,10 +521,10 @@ export function SellForm() {
                         onClick={() => setCoverImageIndex(index)}
                         aria-pressed={coverImageIndex === index}
                         aria-label={`Use ${preview.name} as the cover photo`}
-                        className={`relative aspect-square overflow-hidden rounded-md border-2 bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 ${
+                        className={`relative aspect-square overflow-hidden rounded-md border-2 bg-sage-100 transition focus:outline-none focus:ring-2 focus:ring-sage-900 focus:ring-offset-2 ${
                           coverImageIndex === index
-                            ? "border-gray-950"
-                            : "border-transparent hover:border-gray-400"
+                            ? "border-sage-950"
+                            : "border-transparent hover:border-sage-400"
                         }`}
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -534,7 +534,7 @@ export function SellForm() {
                           className="h-full w-full object-cover"
                         />
                         {coverImageIndex === index ? (
-                          <span className="absolute inset-x-1 bottom-1 rounded bg-gray-950 px-1 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+                          <span className="absolute inset-x-1 bottom-1 rounded bg-sage-300 px-1 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-black">
                             Cover
                           </span>
                         ) : null}
@@ -553,7 +553,7 @@ export function SellForm() {
             type="button"
             onClick={resetForm}
             disabled={isPending}
-            className="rounded-lg border-2 border-gray-300 px-5 py-3 font-semibold text-gray-700 transition hover:border-gray-400 hover:bg-white focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-lg border-2 border-sage-300 px-5 py-3 font-semibold text-black transition hover:border-sage-400 hover:bg-surface focus:outline-none focus:ring-2 focus:ring-sage-400 disabled:cursor-not-allowed disabled:opacity-60"
           >
             Clear form
           </button>
@@ -561,14 +561,14 @@ export function SellForm() {
             type="button"
             onClick={handlePreview}
             disabled={isPending}
-            className="rounded-lg border-2 border-gray-900 px-5 py-3 font-semibold text-gray-900 transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-lg border-2 border-sage-900 px-5 py-3 font-semibold text-black transition hover:bg-surface focus:outline-none focus:ring-2 focus:ring-sage-400 disabled:cursor-not-allowed disabled:opacity-60"
           >
             Preview listing
           </button>
           <button
             type="submit"
             disabled={isPending}
-            className="rounded-lg bg-gray-900 px-5 py-3 font-semibold text-white transition hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:cursor-not-allowed disabled:bg-gray-400"
+            className="rounded-lg bg-sage-300 px-5 py-3 font-semibold text-black transition hover:bg-sage-400 focus:outline-none focus:ring-2 focus:ring-sage-400 disabled:cursor-not-allowed disabled:bg-sage-400"
           >
             {isPending ? "Publishing..." : "List Item"}
           </button>
@@ -577,8 +577,8 @@ export function SellForm() {
 
       <aside aria-live="polite" className="lg:sticky lg:top-6 lg:self-start">
         {showPreview ? (
-          <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-            <div className="flex h-64 items-center justify-center overflow-hidden bg-gray-100 sm:h-80">
+          <div className="overflow-hidden rounded-lg border border-sage-200 bg-surface shadow-sm">
+            <div className="flex h-64 items-center justify-center overflow-hidden bg-sage-100 sm:h-80">
               {imagePreviews[coverImageIndex] ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -587,22 +587,22 @@ export function SellForm() {
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <div className="text-sm font-medium text-gray-500">
+                <div className="text-sm font-medium text-black">
                   Photo preview
                 </div>
               )}
             </div>
             {imagePreviews.length > 1 ? (
-              <div className="flex gap-2 overflow-x-auto border-b border-gray-200 p-3">
+              <div className="flex gap-2 overflow-x-auto border-b border-sage-200 p-3">
                 {imagePreviews.map((preview, index) => (
                   <button
                     key={`${preview.name}-preview-${index}`}
                     type="button"
                     onClick={() => setCoverImageIndex(index)}
                     aria-label={`Preview ${preview.name}`}
-                    className={`h-14 w-14 flex-shrink-0 overflow-hidden rounded border-2 bg-gray-100 ${
+                    className={`h-14 w-14 flex-shrink-0 overflow-hidden rounded border-2 bg-sage-100 ${
                       coverImageIndex === index
-                        ? "border-gray-950"
+                        ? "border-sage-950"
                         : "border-transparent"
                     }`}
                   >
@@ -617,43 +617,43 @@ export function SellForm() {
               </div>
             ) : null}
             <div className="p-6">
-              <span className="inline-block rounded-full bg-gray-900 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+              <span className="inline-block rounded-full bg-sage-300 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-black">
                 {draft.department} · {draft.category}
               </span>
-              <h2 className="mt-4 text-2xl font-bold text-gray-900">
+              <h2 className="mt-4 text-2xl font-bold text-black">
                 {draft.title}
               </h2>
-              <p className="mt-4 text-3xl font-bold text-gray-900">
+              <p className="mt-4 text-3xl font-bold text-black">
                 {formatPreviewPrice(draft.price)}
               </p>
-              <div className="mt-6 grid grid-cols-2 gap-4 border-y border-gray-200 py-4 text-sm">
+              <div className="mt-6 grid grid-cols-2 gap-4 border-y border-sage-200 py-4 text-sm">
                 <div>
-                  <p className="text-gray-500">Size</p>
-                  <p className="font-medium text-gray-900">{draft.size}</p>
+                  <p className="text-black">Size</p>
+                  <p className="font-medium text-black">{draft.size}</p>
                 </div>
                 <div>
-                  <p className="text-gray-500">Condition</p>
-                  <p className="font-medium text-gray-900">
+                  <p className="text-black">Condition</p>
+                  <p className="font-medium text-black">
                     {draft.condition}
                   </p>
                 </div>
                 <div className="col-span-2">
-                  <p className="text-gray-500">Location</p>
-                  <p className="font-medium text-gray-900">{draft.location}</p>
+                  <p className="text-black">Location</p>
+                  <p className="font-medium text-black">{draft.location}</p>
                 </div>
               </div>
-              <h3 className="mt-5 text-sm font-semibold uppercase tracking-wide text-gray-700">
+              <h3 className="mt-5 text-sm font-semibold uppercase tracking-wide text-black">
                 Description
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-gray-600">
+              <p className="mt-2 text-sm leading-relaxed text-black">
                 {draft.description}
               </p>
               {draft.flaws.trim() ? (
                 <>
-                  <h3 className="mt-5 text-sm font-semibold uppercase tracking-wide text-gray-700">
+                  <h3 className="mt-5 text-sm font-semibold uppercase tracking-wide text-black">
                     Flaws
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-gray-600">
+                  <p className="mt-2 text-sm leading-relaxed text-black">
                     {draft.flaws}
                   </p>
                 </>
@@ -661,8 +661,8 @@ export function SellForm() {
             </div>
           </div>
         ) : (
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-6 text-gray-600">
-            <h2 className="text-xl font-bold text-gray-900">
+          <div className="rounded-lg border border-sage-200 bg-sage-50 p-6 text-black">
+            <h2 className="text-xl font-bold text-black">
               Your listing preview
             </h2>
             <p className="mt-2 text-sm leading-relaxed">
