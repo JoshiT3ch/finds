@@ -62,12 +62,19 @@ export default function Footer() {
             <h4 className="font-semibold mb-4">About</h4>
             <ul className="space-y-2">
               <li>
-                <span className="text-gray-500" aria-label="About Finds is coming soon">
+                <Link
+                  href="/about"
+                  className="text-gray-400 hover:text-white transition"
+                >
                   About Finds
-                </span>
+                </Link>
               </li>
+
               <li>
-                <span className="text-gray-500" aria-label="Contact is coming soon">
+                <span
+                  className="text-gray-500"
+                  aria-label="Contact is coming soon"
+                >
                   Contact
                 </span>
               </li>
