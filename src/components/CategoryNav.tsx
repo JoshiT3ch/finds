@@ -25,10 +25,12 @@ const categoryGroups: CategoryGroup[] = [
     description: `Explore pre-loved clothing, shoes, and accessories for ${department.toLowerCase()}.`,
     options: [
       { label: `All ${department}`, href: `/browse?department=${department}` },
-      ...["Jackets", "Tops", "Bottoms", "Dresses", "Shoes", "Accessories"].map((category) => ({
-        label: category,
-        href: `/browse?department=${department}&category=${category}`,
-      })),
+      ...["Jackets", "Tops", "Bottoms", "Dresses", "Shoes", "Accessories"].map(
+        (category) => ({
+          label: category,
+          href: `/browse?department=${department}&category=${category}`,
+        })
+      ),
     ],
   })),
   {
@@ -86,14 +88,20 @@ const categoryGroups: CategoryGroup[] = [
 
 export default function CategoryNav() {
   const [openGroupId, setOpenGroupId] = useState<string | null>(null);
-  const openGroup = categoryGroups.find((group) => group.id === openGroupId);
+  const openGroup = categoryGroups.find(
+    (group) => group.id === openGroupId
+  );
 
   return (
     <div
-      className="relative border-t border-sage-200 bg-sage-100"
+      className="relative border-t border-[#E5E5E5] bg-white"
       onMouseLeave={() => setOpenGroupId(null)}
       onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+        if (
+          !event.currentTarget.contains(
+            event.relatedTarget as Node | null
+          )
+        ) {
           setOpenGroupId(null);
         }
       }}
@@ -109,7 +117,7 @@ export default function CategoryNav() {
       >
         <Link
           href="/browse"
-          className="flex-shrink-0 border-b-2 border-transparent py-3 text-sm font-semibold text-black transition hover:border-sage-900"
+          className="flex-shrink-0 border-b-2 border-transparent py-3 text-sm font-semibold text-[#111111] transition-colors hover:border-[#111111]"
           onMouseEnter={() => setOpenGroupId(null)}
           onFocus={() => setOpenGroupId(null)}
         >
@@ -128,13 +136,14 @@ export default function CategoryNav() {
               onMouseEnter={() => setOpenGroupId(group.id)}
               onFocus={() => setOpenGroupId(group.id)}
               onClick={() => setOpenGroupId(group.id)}
-              className={`flex flex-shrink-0 items-center gap-1.5 border-b-2 py-3 text-sm font-medium transition ${
+              className={`flex flex-shrink-0 items-center gap-1.5 border-b-2 py-3 text-sm font-medium transition-colors ${
                 isOpen
-                  ? "border-sage-900 text-black"
-                  : "border-transparent text-black hover:border-sage-400 hover:text-black"
+                  ? "border-[#111111] text-[#111111]"
+                  : "border-transparent text-[#222222] hover:border-[#999999] hover:text-[#111111]"
               }`}
             >
               {group.label}
+
               <svg
                 viewBox="0 0 20 20"
                 fill="none"
@@ -145,7 +154,10 @@ export default function CategoryNav() {
                   isOpen ? "rotate-180" : ""
                 }`}
               >
-                <path d="m5 7.5 5 5 5-5" strokeLinecap="round" />
+                <path
+                  d="m5 7.5 5 5 5-5"
+                  strokeLinecap="round"
+                />
               </svg>
             </button>
           );
@@ -155,20 +167,21 @@ export default function CategoryNav() {
       {openGroup ? (
         <div
           id={`category-panel-${openGroup.id}`}
-          className="absolute inset-x-0 top-full z-50 border-y border-sage-200 bg-surface shadow-lg"
+          className="absolute inset-x-0 top-full z-50 border-y border-[#E5E5E5] bg-white shadow-lg"
         >
           <div className="mx-auto grid max-w-7xl gap-8 px-4 py-7 sm:grid-cols-[minmax(0,2fr)_minmax(230px,1fr)] sm:px-6 lg:px-8">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-black">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#111111]">
                 Shop {openGroup.label}
               </p>
+
               <ul className="mt-4 grid grid-cols-2 gap-x-8 gap-y-1 sm:grid-cols-3">
                 {openGroup.options.map((option) => (
                   <li key={option.label}>
                     <Link
                       href={option.href}
                       onClick={() => setOpenGroupId(null)}
-                      className="block rounded-md px-2 py-2.5 text-sm text-black transition hover:bg-sage-100 hover:text-black focus-visible:bg-sage-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-900"
+                      className="block rounded-md px-2 py-2.5 text-sm text-[#222222] transition-colors hover:bg-[#F5F5F5] hover:text-[#111111] focus-visible:bg-[#F5F5F5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111]"
                     >
                       {option.label}
                     </Link>
@@ -177,17 +190,19 @@ export default function CategoryNav() {
               </ul>
             </div>
 
-            <div className="rounded-lg bg-sage-100 p-5">
-              <p className="text-sm font-semibold text-black">
+            <div className="rounded-lg bg-[#F5F5F5] p-5">
+              <p className="text-sm font-semibold text-[#111111]">
                 Find your next favorite
               </p>
-              <p className="mt-2 text-sm leading-6 text-black">
+
+              <p className="mt-2 text-sm leading-6 text-[#666666]">
                 {openGroup.description}
               </p>
+
               <Link
                 href={openGroup.browseHref}
                 onClick={() => setOpenGroupId(null)}
-                className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-black underline decoration-sage-400 underline-offset-4 hover:decoration-sage-950"
+                className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#111111] underline underline-offset-4 transition-colors hover:text-[#666666]"
               >
                 Browse all {openGroup.label.toLowerCase()}
                 <span aria-hidden="true">→</span>

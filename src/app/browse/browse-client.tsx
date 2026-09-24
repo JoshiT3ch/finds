@@ -159,7 +159,7 @@ export function BrowseClient({
           </div>
         ) : (
           <>
-            <div className="mb-8 rounded-2xl border border-sage-300 bg-sage-100 p-6 text-black scheme-light">
+            <div className="mb-8 rounded-2xl border border-gray-200 bg-gray-50 p-6 text-black scheme-light">
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 <div>
                   <label htmlFor="department" className="mb-2 block text-sm font-medium text-black">
@@ -169,7 +169,7 @@ export function BrowseClient({
                     id="department"
                     value={selectedDepartment}
                     onChange={(event) => setSelectedDepartment(event.target.value)}
-                    className="w-full rounded-lg border border-sage-300 bg-surface px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-sage-900"
+                    className="w-full rounded-lg border border-gray-200 bg-white px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-sage-900"
                   >
                     <option value="">Everyone</option>
                     {departments.map((department) => (
@@ -190,7 +190,7 @@ export function BrowseClient({
                     placeholder="Search by item name..."
                     value={searchQuery}
                     onChange={(event) => setSearchQuery(event.target.value)}
-                    className="w-full rounded-lg border border-sage-300 bg-surface px-4 py-2 outline-none transition placeholder:text-black focus:border-transparent focus:ring-2 focus:ring-sage-900"
+                    className="w-full rounded-lg border border-gray-200 bg-white px-4 py-2 outline-none transition placeholder:text-black focus:border-transparent focus:ring-2 focus:ring-sage-900"
                   />
                 </div>
 
@@ -207,7 +207,7 @@ export function BrowseClient({
                     onChange={(event) =>
                       setSelectedCategory(event.target.value)
                     }
-                    className="w-full rounded-lg border border-sage-300 bg-surface px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-sage-900"
+                    className="w-full rounded-lg border border-gray-200 bg-white px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-sage-900"
                   >
                     <option value="">All Categories</option>
                     {categories.map((category) => (
@@ -229,7 +229,7 @@ export function BrowseClient({
                     id="size"
                     value={selectedSize}
                     onChange={(event) => setSelectedSize(event.target.value)}
-                    className="w-full rounded-lg border border-sage-300 bg-surface px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-sage-900"
+                    className="w-full rounded-lg border border-gray-200 bg-white px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-sage-900"
                   >
                     <option value="">All Sizes</option>
                     {sizes.map((size) => (
@@ -253,7 +253,7 @@ export function BrowseClient({
                     onChange={(event) =>
                       setSelectedCondition(event.target.value)
                     }
-                    className="w-full rounded-lg border border-sage-300 bg-surface px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-sage-900"
+                    className="w-full rounded-lg border border-gray-200 bg-white px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-sage-900"
                   >
                     <option value="">All Conditions</option>
                     {conditions.map((condition) => (
@@ -277,7 +277,7 @@ export function BrowseClient({
                     onChange={(event) =>
                       setSortOrder(event.target.value as SortOrder)
                     }
-                    className="w-full rounded-lg border border-sage-300 bg-surface px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-sage-900"
+                    className="w-full rounded-lg border border-gray-200 bg-white px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-sage-900"
                   >
                     <option value="newest">Newest first</option>
                     <option value="price-ascending">
