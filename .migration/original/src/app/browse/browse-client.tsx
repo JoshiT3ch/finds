@@ -1,0 +1,346 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import ProductCard from "@/components/ProductCard";
+import { departments, type Department } from "../../../utils/listings/departments";
+
+export type BrowseListing = {
+  department: Department | null;
+  id: string;
+  name: string;
+  price: number;
+  size: string;
+  condition: string;
+  category: string;
+  description: string;
+  flaws: string;
+  location: string;
+  image: string | null;
+};
+
+type BrowseClientProps = {
+  listings: BrowseListing[];
+  loadError: boolean;
+  showCreatedMessage: boolean;
+  initialCategory?: string;
+  initialDepartment?: string;
+  initialSearchQuery?: string;
+};
+
+type SortOrder = "newest" | "price-ascending" | "price-descending";
+
+function getOptions(listings: BrowseListing[], key: keyof BrowseListing) {
+  return Array.from(
+    new Set(
+      listings
+        .map((listing) => listing[key])
+        .filter((value): value is string => typeof value === "string"),
+    ),
+  ).sort((first, second) => first.localeCompare(second));
+}
+
+export function BrowseClient({
+  listings,
+  loadError,
+  showCreatedMessage,
+  initialCategory = "",
+  initialDepartment = "",
+  initialSearchQuery = "",
+}: BrowseClientProps) {
+  const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+  const [selectedDepartment, setSelectedDepartment] = useState(initialDepartment);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedCondition, setSelectedCondition] = useState("");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
+
+  const categories = useMemo(
+    () => getOptions(listings, "category"),
+    [listings],
+  );
+  const sizes = useMemo(() => getOptions(listings, "size"), [listings]);
+  const conditions = useMemo(
+    () => getOptions(listings, "condition"),
+    [listings],
+  );
+
+  const filteredListings = useMemo(() => {
+    const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+    const matches = listings.filter((listing) => {
+      const matchesSearch =
+        normalizedSearchQuery === "" ||
+        [
+          listing.name,
+          listing.description,
+          listing.category,
+          listing.location,
+          listing.flaws,
+        ].some((value) => value.toLowerCase().includes(normalizedSearchQuery));
+      const matchesCategory =
+        selectedCategory === "" || listing.category === selectedCategory;
+      const matchesSize =
+        selectedSize === "" || listing.size === selectedSize;
+      const matchesCondition =
+        selectedCondition === "" || listing.condition === selectedCondition;
+
+      return (
+        matchesSearch && matchesCategory && matchesSize && matchesCondition &&
+        (selectedDepartment === "" || listing.department === selectedDepartment)
+      );
+    });
+
+    if (sortOrder === "price-ascending") {
+      return [...matches].sort((first, second) => first.price - second.price);
+    }
+
+    if (sortOrder === "price-descending") {
+      return [...matches].sort((first, second) => second.price - first.price);
+    }
+
+    return matches;
+  }, [
+    listings,
+    searchQuery,
+    selectedCategory,
+    selectedDepartment,
+    selectedCondition,
+    selectedSize,
+    sortOrder,
+  ]);
+
+  const resetFilters = () => {
+    setSearchQuery("");
+    setSelectedCategory("");
+    setSelectedDepartment("");
+    setSelectedSize("");
+    setSelectedCondition("");
+    setSortOrder("newest");
+  };
+
+  const hasActiveFilters =
+    searchQuery !== "" ||
+    selectedCategory !== "" ||
+    selectedDepartment !== "" ||
+    selectedSize !== "" ||
+    selectedCondition !== "" ||
+    sortOrder !== "newest";
+
+  return (
+    <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mb-8">
+          <h1 className="mb-2 text-3xl font-bold text-black">
+            Browse Finds
+          </h1>
+          <p className="text-black">
+            {loadError
+              ? "Discover unique second-hand, thrifted, and vintage clothing."
+              : `Discover ${listings.length} unique second-hand, thrifted, and vintage clothing items.`}
+          </p>
+        </div>
+
+        {showCreatedMessage ? (
+          <div
+            role="status"
+            className="mb-8 rounded-lg border border-green-200 bg-green-50 p-4 text-sm font-medium text-black"
+          >
+            Your listing was published successfully.
+          </div>
+        ) : null}
+
+        {loadError ? (
+          <div
+            role="alert"
+            className="rounded-lg border border-red-200 bg-red-50 p-6 text-black"
+          >
+            <h2 className="font-semibold">We could not load the listings.</h2>
+            <p className="mt-2 text-sm text-black">
+              Please refresh the page and try again in a moment.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="mb-8 rounded-2xl border border-sage-300 bg-sage-100 p-6 text-black scheme-light">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div>
+                  <label htmlFor="department" className="mb-2 block text-sm font-medium text-black">
+                    Who is it for?
+                  </label>
+                  <select
+                    id="department"
+                    value={selectedDepartment}
+                    onChange={(event) => setSelectedDepartment(event.target.value)}
+                    className="w-full rounded-lg border border-sage-300 bg-surface px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-sage-900"
+                  >
+                    <option value="">Everyone</option>
+                    {departments.map((department) => (
+                      <option key={department} value={department}>{department}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label
+                    htmlFor="search"
+                    className="mb-2 block text-sm font-medium text-black"
+                  >
+                    Search
+                  </label>
+                  <input
+                    id="search"
+                    type="text"
+                    placeholder="Search by item name..."
+                    value={searchQuery}
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    className="w-full rounded-lg border border-sage-300 bg-surface px-4 py-2 outline-none transition placeholder:text-black focus:border-transparent focus:ring-2 focus:ring-sage-900"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="category"
+                    className="mb-2 block text-sm font-medium text-black"
+                  >
+                    Category
+                  </label>
+                  <select
+                    id="category"
+                    value={selectedCategory}
+                    onChange={(event) =>
+                      setSelectedCategory(event.target.value)
+                    }
+                    className="w-full rounded-lg border border-sage-300 bg-surface px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-sage-900"
+                  >
+                    <option value="">All Categories</option>
+                    {categories.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="size"
+                    className="mb-2 block text-sm font-medium text-black"
+                  >
+                    Size
+                  </label>
+                  <select
+                    id="size"
+                    value={selectedSize}
+                    onChange={(event) => setSelectedSize(event.target.value)}
+                    className="w-full rounded-lg border border-sage-300 bg-surface px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-sage-900"
+                  >
+                    <option value="">All Sizes</option>
+                    {sizes.map((size) => (
+                      <option key={size} value={size}>
+                        {size}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="condition"
+                    className="mb-2 block text-sm font-medium text-black"
+                  >
+                    Condition
+                  </label>
+                  <select
+                    id="condition"
+                    value={selectedCondition}
+                    onChange={(event) =>
+                      setSelectedCondition(event.target.value)
+                    }
+                    className="w-full rounded-lg border border-sage-300 bg-surface px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-sage-900"
+                  >
+                    <option value="">All Conditions</option>
+                    {conditions.map((condition) => (
+                      <option key={condition} value={condition}>
+                        {condition}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="sort"
+                    className="mb-2 block text-sm font-medium text-black"
+                  >
+                    Sort
+                  </label>
+                  <select
+                    id="sort"
+                    value={sortOrder}
+                    onChange={(event) =>
+                      setSortOrder(event.target.value as SortOrder)
+                    }
+                    className="w-full rounded-lg border border-sage-300 bg-surface px-4 py-2 outline-none transition focus:border-transparent focus:ring-2 focus:ring-sage-900"
+                  >
+                    <option value="newest">Newest first</option>
+                    <option value="price-ascending">
+                      Price: Low to high
+                    </option>
+                    <option value="price-descending">
+                      Price: High to low
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              {hasActiveFilters ? (
+                <div className="mt-4">
+                  <button
+                    onClick={resetFilters}
+                    className="text-sm font-medium text-black underline transition hover:text-black"
+                    aria-label="Reset all filters"
+                  >
+                    Clear all filters
+                  </button>
+                </div>
+              ) : null}
+            </div>
+
+            <div className="mb-6">
+              <p className="text-sm text-black">
+                {filteredListings.length} of {listings.length} items
+                {hasActiveFilters && " shown"}
+              </p>
+            </div>
+
+            {filteredListings.length > 0 ? (
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {filteredListings.map((listing) => (
+                  <ProductCard key={listing.id} listing={listing} />
+                ))}
+              </div>
+            ) : hasActiveFilters ? (
+              <div className="py-12 text-center">
+                <p className="mb-4 text-black">
+                  No items found matching your filters.
+                </p>
+                <button
+                  onClick={resetFilters}
+                  className="font-medium text-black transition hover:underline"
+                  aria-label="Reset filters and try again"
+                >
+                  Clear filters and try again
+                </button>
+              </div>
+            ) : (
+              <div className="py-12 text-center">
+                <h2 className="font-semibold text-black">
+                  No available listings yet.
+                </h2>
+                <p className="mt-2 text-black">
+                  Check back soon for newly published finds.
+                </p>
+              </div>
+            )}
+          </>
+        )}
+    </main>
+  );
+}

@@ -1,0 +1,67 @@
+import { isDepartment } from "./departments.js";
+const LISTING_IMAGES_PATH = "/storage/v1/object/public/listing-images/";
+function getText(value, fallback) {
+    const text = typeof value === "string" ? value.trim() : "";
+    return text || fallback;
+}
+function getFlaws(value) {
+    if (Array.isArray(value)) {
+        return value.filter((flaw) => typeof flaw === "string").join(" ").trim();
+    }
+    return getText(value, "");
+}
+function getPrice(value) {
+    if (typeof value !== "number" && typeof value !== "string") {
+        return null;
+    }
+    const price = typeof value === "string" ? Number(value.trim()) : value;
+    return Number.isFinite(price) && price > 0 ? price : null;
+}
+export function getValidListingImageUrl(imageUrl, supabaseUrl) {
+    if (!imageUrl)
+        return null;
+    try {
+        const parsedImageUrl = new URL(imageUrl);
+        const parsedSupabaseUrl = new URL(supabaseUrl);
+        if (parsedImageUrl.protocol !== "https:" ||
+            parsedImageUrl.origin !== parsedSupabaseUrl.origin ||
+            !parsedImageUrl.pathname.startsWith(LISTING_IMAGES_PATH) ||
+            parsedImageUrl.search !== "" ||
+            parsedImageUrl.hash !== "" ||
+            parsedImageUrl.username !== "" ||
+            parsedImageUrl.password !== "") {
+            return null;
+        }
+        return parsedImageUrl.toString();
+    }
+    catch {
+        return null;
+    }
+}
+export function mapPublicListing(row, supabaseUrl) {
+    const id = row.id === null ? "" : String(row.id).trim();
+    const price = getPrice(row.price);
+    if (!id || price === null)
+        return null;
+    const primaryImage = getValidListingImageUrl(row.image_url, supabaseUrl);
+    const galleryImages = Array.isArray(row.image_urls)
+        ? row.image_urls
+            .map((imageUrl) => getValidListingImageUrl(imageUrl, supabaseUrl))
+            .filter((imageUrl) => imageUrl !== null)
+        : [];
+    const images = Array.from(new Set(primaryImage ? [primaryImage, ...galleryImages] : galleryImages));
+    return {
+        id,
+        department: isDepartment(row.department) ? row.department : null,
+        name: getText(row.title, "Untitled listing"),
+        price,
+        size: getText(row.size, "Not specified"),
+        condition: getText(row.condition, "Not specified"),
+        category: getText(row.category, "Uncategorized"),
+        description: getText(row.description, "No description provided."),
+        flaws: getFlaws(row.flaws),
+        location: getText(row.location, "Location not specified"),
+        image: images[0] ?? null,
+        images,
+    };
+}
